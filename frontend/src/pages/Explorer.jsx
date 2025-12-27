@@ -31,6 +31,7 @@ function gamePadFromBytes(b, offset = 0) {
 
 function Explorer() {
 	const [solution, setSolution] = useState(null);
+	const [removeHeader, setRemoveHeader] = useState(false); // State for the tick box
 
 	const handleFileUpload = async (e) => {
 		const file = e.target.files[0];
@@ -39,9 +40,10 @@ function Explorer() {
 		const buffer = await file.arrayBuffer();
 		const bytes = new Uint8Array(buffer);
 
-		const pads = parseGamePads(bytes);
+		// Remove the first 0x400 bytes if the tick box is checked
+		const processedBytes = removeHeader ? bytes.slice(0x400) : bytes;
 
-		
+		const pads = parseGamePads(processedBytes);
 
 		setSolution(pads);
 	};
@@ -54,15 +56,23 @@ function Explorer() {
 				onChange={handleFileUpload}
 			/>
 
+			<label>
+				<input
+					type="checkbox"
+					checked={removeHeader}
+					onChange={(e) => setRemoveHeader(e.target.checked)}
+				/>
+				Remove first 0x400 bytes (fixes some replays)
+			</label>
+
 			{solution ? (
 				<>
 					<h2>File loaded</h2>
 					<p>Bytes length: {solution.length}</p>
-
 					<BlockWindow solution={solution} />
 				</>
 			) : (
-				<h1>No blocks, or currently syncing</h1>
+				<h1>No replay loaded</h1>
 			)}
 		</>
 	);
