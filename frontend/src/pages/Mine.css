@@ -1,0 +1,19 @@
+body, html {
+  background-color: #000000;
+  image-rendering: pixelated;
+  scrollbar-width: none;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+.sm64canvas {
+  width: 100vw;
+  height: 100vh;
+}
+.sm64canvas_small {
+  width: 600px;
+  height: 300px;
+}
+

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import BlockWindow from "../components/BlockWindow";
+import './Mine.css';
 
 class GamePad {
 	constructor(button = 0, stick_x = 0, stick_y = 0) {
