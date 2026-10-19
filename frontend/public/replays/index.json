@@ -4,6 +4,201 @@
     "title": "AI Mario 64 Freerun #1",
     "description": "The curiosity-driven AI run from the YouTube video (105,480 frames, about 59 minutes)",
     "video": "https://www.youtube.com/watch?v=BnzeygHmNLI",
-    "start": 0
+    "start": 0,
+    "date": "2026-01-29",
+    "important": true
+  },
+  {
+    "date": "2026-10-19T01:25:00Z",
+    "title": "Noise benchmark: white vs pink, seed 1",
+    "description": "The original curiosity GA (population 128, 600-frame genomes, 1-frame commit) from the start menu with different gamepad noise. Distinct 333-unit voxels / horizontal cells at each game time.",
+    "table": {
+      "columns": [
+        "Noise",
+        "5:00",
+        "15:00",
+        "22:16",
+        "Maps reached by 22:16",
+        "Castle entry"
+      ],
+      "rows": [
+        {
+          "cells": [
+            "White (original)",
+            "923 / 644",
+            "1,829 / 1,037",
+            "2,664 / 1,555",
+            "Castle, courtyard, BoB",
+            "frame 34,486"
+          ],
+          "file": "bench-white.m64",
+          "start": 1680
+        },
+        {
+          "cells": [
+            "Pink",
+            "729 / 488",
+            "1,683 / 975",
+            "2,761 / 1,820",
+            "Castle, BoB",
+            "frame 29,263"
+          ],
+          "file": "bench-pink.m64",
+          "start": 1680
+        },
+        {
+          "cells": [
+            "Pink + block crossover",
+            "703 / 444",
+            "1,611 / 917",
+            "2,246 / 1,291",
+            "Castle, courtyard",
+            "frame 38,783"
+          ],
+          "file": "bench-pink-block.m64",
+          "start": 1680
+        },
+        {
+          "cells": [
+            "White + block crossover",
+            "855 / 594",
+            "1,707 / 944",
+            "2,027 / 1,045",
+            "Castle Grounds only",
+            "frame 44,585"
+          ],
+          "file": "bench-white-block.m64",
+          "start": 1680
+        }
+      ],
+      "highlight": [
+        1
+      ],
+      "note": "White leads early; pink overtakes it after about 17 minutes. One seed each, so not conclusive; seeds 2 and 3 and brown-noise variants are running. The white replay ends at 36,000 committed frames (its last save before the run was stopped). Frame numbers include the 1,680 start-menu frames."
+    },
+    "links": [
+      {
+        "label": "Full report with heatmaps",
+        "url": "https://claude.ai/artifact/Hx68EfL6fCYh3p3fArofJR"
+      }
+    ],
+    "important": true
+  },
+  {
+    "date": "2026-10-19T08:45:00Z",
+    "title": "Noise benchmark: batch 2, completed runs",
+    "description": "The finished 30-minute curiosity runs from the second noise batch, compared at the same checkpoints as the seed-1 table. Distinct 333-unit voxels / horizontal cells at each game time.",
+    "table": {
+      "columns": [
+        "Noise",
+        "5:00",
+        "15:00",
+        "30:00",
+        "Maps reached",
+        "Castle entry"
+      ],
+      "rows": [
+        {
+          "cells": [
+            "Pink, seed 2",
+            "807 / 546",
+            "1,634 / 954",
+            "2,391 / 1,182",
+            "Castle Grounds",
+            "\u2013"
+          ],
+          "file": "bench-pink-s2.m64",
+          "start": 1680
+        },
+        {
+          "cells": [
+            "Brown-stick, seed 1",
+            "805 / 544",
+            "1,705 / 971",
+            "2,418 / 1,197",
+            "Castle Grounds",
+            "\u2013"
+          ],
+          "file": "bench-brown-stick-s1.m64",
+          "start": 1680
+        },
+        {
+          "cells": [
+            "Walk, seed 1 (stopped)",
+            "894 / 636",
+            "1,735 / 1,035",
+            "2,786 / 1,732 at 24:46",
+            "Castle, courtyard, BoB",
+            "frame 35,323"
+          ],
+          "file": "bench-walk-s1.m64",
+          "start": 1680
+        },
+        {
+          "cells": [
+            "Brown, seed 1 (stopped)",
+            "751 / 505",
+            "1,459 / 806",
+            "2,650 / 1,593 at 26:13",
+            "Castle, courtyard, BoB",
+            "frame 37,452"
+          ],
+          "file": "bench-brown-s1.m64",
+          "start": 1680
+        }
+      ],
+      "highlight": [
+        1
+      ],
+      "note": "Runs that stopped early are marked: walk seed 1 (frame 44,590) and brown seed 1 (frame 47,190) hit a twin/game mismatch in Bob-omb Battlefield, so scores after that point aren't reliable. Their replays end at the last saved checkpoint, 42,000 and 45,000 committed frames, before the mismatch. Columns show distinct voxels / horizontal cells; the 30:00 column is the value at the stop for stopped runs. Frame numbers include the 1,680 start-menu frames."
+    }
+  },
+  {
+    "date": "2026-10-19T08:48:00Z",
+    "title": "Noise benchmark: batch 2, still running",
+    "description": "The rest of the second batch, compared at 30,000 committed frames (about 16 game minutes), the point every run has reached. Voxels and horizontal cells are cumulative; numbers will change as the runs finish.",
+    "table": {
+      "columns": [
+        "Run",
+        "Voxels at 30k",
+        "Horizontal cells at 30k",
+        "Maps reached by 30k",
+        "Frames run",
+        "Status"
+      ],
+      "rows": [
+        {
+          "cells": [
+            "Brown, seed 2",
+            "1,856",
+            "1,060",
+            "Castle",
+            "30,090",
+            "running"
+          ]
+        },
+        {
+          "cells": [
+            "Brown-stick, seed 2",
+            "\u2013",
+            "\u2013",
+            "Castle Grounds",
+            "4,396",
+            "running"
+          ]
+        },
+        {
+          "cells": [
+            "White, seed 2",
+            "1,843",
+            "1,024",
+            "Castle Grounds",
+            "39,022",
+            "running"
+          ]
+        }
+      ],
+      "note": "Brown-stick seed 2 hasn't reached 30,000 frames yet. The two runs that stopped early (walk seed 1, brown seed 1) are in the completed table. Frame numbers include the 1,680 start-menu frames."
+    }
   }
 ]

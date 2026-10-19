@@ -5,6 +5,7 @@ import { courseName } from '../lib/sm64';
 import Hud from './Hud';
 import InputDisplay from './InputDisplay';
 import Timeline from './Timeline';
+import { RESOLUTIONS, loadResolution, saveResolution } from '../lib/resolution';
 
 const speedLabel = (s) => (s === Infinity ? 'max' : `${s}×`);
 
@@ -21,6 +22,7 @@ export default function Viewer({ replay, initial, onRewind, onClose }) {
   const [showHud, setShowHud] = useState(true);
   const [showPanel, setShowPanel] = useState(true);
   const [jump, setJump] = useState('');
+  const [resolution, setResolution] = useState(loadResolution);
   const resumeAfterSeek = useRef(false);
 
   useEffect(() => {
@@ -71,6 +73,28 @@ export default function Viewer({ replay, initial, onRewind, onClose }) {
     if (document.fullscreenElement) document.exitFullscreen();
     else stage.current?.requestFullscreen?.();
   }, []);
+
+  // Real fullscreen: the stage covers the screen, the picture fills it, and
+  // a control bar shows while the mouse moves.
+  const [isFull, setIsFull] = useState(false);
+  const [barVisible, setBarVisible] = useState(true);
+  const idle = useRef(0);
+  useEffect(() => {
+    const onChange = () => {
+      const on = document.fullscreenElement === stage.current;
+      setIsFull(on);
+      setBarVisible(true);
+      player.current?.resolution?.setFullscreen(on);
+    };
+    document.addEventListener('fullscreenchange', onChange);
+    return () => document.removeEventListener('fullscreenchange', onChange);
+  }, []);
+  const wake = useCallback(() => {
+    setBarVisible(true);
+    clearTimeout(idle.current);
+    idle.current = setTimeout(() => setBarVisible(false), 2500);
+  }, []);
+  useEffect(() => () => clearTimeout(idle.current), []);
 
   useEffect(() => {
     const onKey = (e) => {
@@ -141,6 +165,25 @@ export default function Viewer({ replay, initial, onRewind, onClose }) {
           {replay.header ? ' · Mupen64 header skipped' : ''}
         </span>
         <span className="spacer" />
+        <label className="res-select small muted" htmlFor="resolution">
+          Resolution
+          <select
+            id="resolution"
+            value={resolution.id}
+            onChange={(e) => {
+              const res = RESOLUTIONS.find((r) => r.id === e.target.value);
+              setResolution(res);
+              saveResolution(res);
+              player.current?.setResolution(res);
+            }}
+          >
+            {RESOLUTIONS.map((r) => (
+              <option key={r.id} value={r.id}>
+                {r.label}
+              </option>
+            ))}
+          </select>
+        </label>
         <button className="ghost" onClick={() => setShowHud((v) => !v)} title="Toggle HUD (h)">
           HUD
         </button>
@@ -153,8 +196,39 @@ export default function Viewer({ replay, initial, onRewind, onClose }) {
       </header>
 
       <div className="body">
-        <div className="stage" ref={stage}>
+        <div
+          className={`stage${isFull && !barVisible ? ' idle' : ''}`}
+          ref={stage}
+          onMouseMove={isFull ? wake : undefined}
+          onClick={isFull ? wake : undefined}
+        >
           <div className="canvas-box" ref={container} />
+          {isFull && view && (
+            <div className={`fs-bar${barVisible ? ' show' : ''}`} onMouseMove={wake}>
+              <div className="row">
+                <button className="primary" onClick={() => p?.toggle()} disabled={view.seeking}>
+                  {view.playing ? '❚❚' : '▶'}
+                </button>
+                <span className="mono small">
+                  {view.frame} / {view.total} · {formatTime(view.frame)}
+                </span>
+                <span className="spacer" />
+                <button className="ghost" onClick={() => setShowHud((v) => !v)}>
+                  HUD
+                </button>
+                <button className="ghost" onClick={fullscreen} title="Exit fullscreen (f / Esc)">
+                  ✕
+                </button>
+              </div>
+              <Timeline
+                pads={replay.pads}
+                frame={view.frame}
+                seekTarget={view.seekTarget}
+                events={view.events}
+                onSeek={seek}
+              />
+            </div>
+          )}
           {showHud && view && <Hud frame={view.frame} total={view.total} state={view.state} />}
           {view?.seeking && (
             <div className="banner">

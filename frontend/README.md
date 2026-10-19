@@ -33,8 +33,22 @@ ROM once (it's cached in IndexedDB).
 
 ## Examples
 
-`public/replays/index.json` lists the bundled replays:
-`{ "file", "title", "description", "start" }`.
+`public/replays/index.json` is the start screen's timeline, shown oldest
+first and grouped by day. Each entry has a `title` and a `date`, an ISO
+timestamp in UTC (`"2026-10-18T10:04:00Z"`) that the page shows in the
+viewer's own time zone, or a plain date (`"2026-01-29"`) for an entry with no
+known time of day, plus any of:
+
+- `file`, `start`: a replay in `public/replays/`, opened at frame `start`
+- `description`: a line of text
+- `table`: `{ "columns": [...], "rows": [[...]], "highlight": [rowIndex], "note": "..." }`
+  (a row is an array of cells, or `{ "cells": [...], "file", "start" }` to make
+  the row open that replay: it gets a ▶ Play button and the whole row is clickable)
+- `links`: `[{ "label", "url" }]`; `video` adds a "Watch the video" link
+- `image`, `alt`: a path under `public/` or a URL
+- `important`: `true` marks the entry with ★ and keeps it under "Important only"
+
+Entries without `file` (results, notes) get a hollow dot on the timeline.
 
 ## Development
 
