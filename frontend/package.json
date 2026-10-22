@@ -12,6 +12,7 @@
     "test:tas": "SM64_BINDS_FRONTEND=${SM64_BINDS_FRONTEND:-../../sm64-binds/javascript} xvfb-run -a node --test tests/tas.test.js"
   },
   "dependencies": {
+    "mp4-muxer": "^5.2.2",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "sm64-binds-frontend": "^2.0.1",

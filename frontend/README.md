@@ -81,5 +81,32 @@ uses the local `sm64-binds/javascript` and a ROM at
 WebGL, which headless Chromium lacks, so it runs under `xvfb-run`. It takes
 about 20 minutes, mostly the two 120-star runs.
 
+### MP4 export
+
+`src/lib/exporter.js` (UI in `src/components/ExportDialog.jsx`, loaded on
+first use) exports any regions and frame ranges of the open replay, joined in
+frame order, into one MP4 with the overlays drawn in:
+
+- **Frames**: it steps the viewer's own emulator one frame at a time at the
+  chosen size and copies each picture right after the step, in the same task
+  (the WebGL canvas is cleared once shown). The overlays are drawn on a 2D
+  canvas over it, and the result is encoded with WebCodecs. Gaps between
+  segments are fast-forwarded; a segment that starts before the current
+  frame reloads the page first (as seeking back does), with the dialog's
+  settings kept in the pending store.
+- **Sound**: the browser build plays sound through SDL's Emscripten glue,
+  whose ScriptProcessorNode pulls buffers from SDL's queue, and the game
+  makes a little more or less sound each frame depending on how full the
+  queue is. During an export the real AudioContext is suspended and the
+  exporter calls that node's `onaudioprocess` itself with a stand-in buffer,
+  1/30 s worth per frame. So the game makes the same sound it makes at 1×, in
+  step with the frames. This relies on the glue in
+  `sm64-binds-frontend`'s `sm64.us.js` (`Module.SDL2.audio.scriptProcessorNode`);
+  if a new Emscripten changes it, export falls back to no sound.
+- **Codecs and file**: H.264 + AAC when the browser can encode them, else VP9 +
+  Opus (Chromium without proprietary codecs, as Playwright's is), muxed by
+  `mp4-muxer`. With `showSaveFilePicker` (Chrome, Edge) the file streams to
+  disk; elsewhere it's built in memory and downloaded.
+
 Code: `src/lib/player.js` drives the emulator (timing, seeking, events),
 `src/lib/m64.js` parses replays, `src/components/` is the UI.

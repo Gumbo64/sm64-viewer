@@ -32,6 +32,7 @@ export class Player {
     this.lastTime = null;
     this.debt = 0;
     this.dirty = true;
+    this.exporting = false; // lib/exporter.js is stepping the game; tick() stays out of it
   }
 
   /** Creates the emulator on a fresh canvas inside `container`. */
@@ -166,6 +167,10 @@ export class Player {
 
   tick = (time) => {
     if (!this.engine) return;
+    if (this.exporting) {
+      this.raf = requestAnimationFrame(this.tick);
+      return;
+    }
     const start = performance.now();
     if (this.seeking) {
       this.setAudio(false);

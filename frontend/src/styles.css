@@ -502,6 +502,98 @@ button.link:hover {
   border-radius: 2px;
 }
 
+/* Export dialog */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(5, 6, 10, 0.6);
+}
+.export-dialog {
+  display: grid;
+  gap: 0.6rem;
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+}
+.export-dialog h2 {
+  margin: 0;
+}
+.export-dialog p {
+  margin: 0;
+}
+.export-dialog fieldset {
+  border: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.6rem;
+}
+.export-dialog .field {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr;
+  gap: 0.6rem;
+  align-items: center;
+}
+.export-dialog .field > span {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+.export-dialog .field.top {
+  align-items: start;
+}
+.export-dialog .field.top > span {
+  padding-top: 0.3rem;
+}
+.export-dialog .segments {
+  display: grid;
+  gap: 0.3rem;
+  max-height: 16rem;
+  overflow-y: auto;
+}
+.export-dialog .segment {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.9rem;
+}
+.export-dialog .segment input[type='checkbox'] {
+  padding: 0;
+}
+.export-dialog .segment .swatch {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 2px;
+  flex: none;
+}
+.export-dialog .checks {
+  display: grid;
+  gap: 0.25rem;
+  font-size: 0.9rem;
+}
+.export-dialog .checks input {
+  padding: 0;
+  margin-right: 0.35rem;
+}
+.export-progress {
+  display: grid;
+  gap: 0.3rem;
+}
+.export-progress .bar {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--panel-2);
+  overflow: hidden;
+}
+.export-progress .bar > div {
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.2s;
+}
+
 @media (max-width: 800px) {
   .panel {
     display: none;

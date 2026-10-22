@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { Suspense, lazy, useCallback, useEffect, useRef, useState } from 'react';
 import { Player, SPEEDS } from '../lib/player';
 import { formatTime } from '../lib/m64';
 import { courseName } from '../lib/sm64';
@@ -7,6 +7,9 @@ import Hud from './Hud';
 import InputDisplay from './InputDisplay';
 import Timeline from './Timeline';
 import { RESOLUTIONS, loadResolution, saveResolution } from '../lib/resolution';
+
+// Loaded when first opened (it brings the MP4 muxer).
+const ExportDialog = lazy(() => import('./ExportDialog'));
 
 const speedLabel = (s) => (s === Infinity ? 'max' : `${s}×`);
 
@@ -25,6 +28,9 @@ export default function Viewer({ replay, initial, onRewind, onClose }) {
   const [jump, setJump] = useState('');
   const [resolution, setResolution] = useState(loadResolution);
   const resumeAfterSeek = useRef(false);
+  const [exportOpen, setExportOpen] = useState(false);
+  const [exporting, setExporting] = useState(false);
+  const exportJob = useRef(initial?.exportJob ?? null);
 
   useEffect(() => {
     const p = new Player(replay.pads, setView);
@@ -45,13 +51,15 @@ export default function Viewer({ replay, initial, onRewind, onClose }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Resume playback once a restore-seek finishes.
+  // Resume playback once a restore-seek finishes; reopen the export dialog
+  // if the page was reloaded to export from an earlier frame.
   useEffect(() => {
     if (view && !view.seeking && resumeAfterSeek.current) {
       resumeAfterSeek.current = false;
       player.current.play();
     }
-  }, [view]);
+    if (view && !view.seeking && exportJob.current && !exportOpen) setExportOpen(true);
+  }, [view, exportOpen]);
 
   const seek = useCallback(
     (target) => {
@@ -100,6 +108,10 @@ export default function Viewer({ replay, initial, onRewind, onClose }) {
   useEffect(() => {
     const onKey = (e) => {
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+      if (exportOpen) {
+        if (e.key === 'Escape' && !exporting) setExportOpen(false);
+        return;
+      }
       const p = player.current;
       if (!p || !view) return;
       switch (e.key) {
@@ -148,7 +160,7 @@ export default function Viewer({ replay, initial, onRewind, onClose }) {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [view, seek, changeSpeed, fullscreen]);
+  }, [view, seek, changeSpeed, fullscreen, exportOpen, exporting]);
 
   const p = player.current;
   const region = view ? regionAt(replay.regions, view.frame) : null;
@@ -194,6 +206,9 @@ export default function Viewer({ replay, initial, onRewind, onClose }) {
         </button>
         <button className="ghost" onClick={fullscreen} title="Fullscreen (f)">
           ⛶
+        </button>
+        <button className="ghost" onClick={() => setExportOpen(true)} disabled={!view} title="Save a frame range as an MP4 video">
+          Export MP4
         </button>
       </header>
 
@@ -307,6 +322,23 @@ export default function Viewer({ replay, initial, onRewind, onClose }) {
           </aside>
         )}
       </div>
+
+      {exportOpen && view && (
+        <Suspense fallback={null}>
+          <ExportDialog
+            replay={replay}
+            player={player.current}
+            frame={view.frame}
+            job={exportJob.current}
+            onRewind={(frame, job) => onRewind(frame, 1, false, job)}
+            onBusy={setExporting}
+            onClose={() => {
+              exportJob.current = null;
+              setExportOpen(false);
+            }}
+          />
+        </Suspense>
+      )}
 
       <footer className="controls">
         {view && (

@@ -66,6 +66,25 @@ While it plays:
 It needs a desktop browser with WebGL. Large runs use a lot of memory (the
 game alone takes about 640 MB).
 
+## Saving a video
+
+**Export MP4** (top right) saves any part of a replay as a video file, with the
+annotations drawn in, ready to upload to YouTube:
+
+- **Choose what to include**: tick any of the run's regions and add your own
+  frame ranges. They're joined in order and the gaps are skipped, so you can
+  cut a long run down to its highlights.
+- **Choose the look**: 1080p or 720p, wide or the game's 4:3 shape; the
+  current region's name and note, a bar of the regions along the bottom, a
+  small HUD with the course and frame, the controller input (stick and
+  buttons), and the game's sound.
+- Every frame is in the video, with the sound that goes with it. Exporting
+  usually runs faster than watching.
+
+It works best in Chrome or Edge, which save straight to a file of any length
+and use H.264 where the computer supports it. Other browsers build the video
+in memory, so keep exports there short.
+
 ## Developing
 
 Building it, adding runs to the start page (`index.json`, including region

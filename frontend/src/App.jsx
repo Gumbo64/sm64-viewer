@@ -47,7 +47,7 @@ function Main() {
       if (pending) {
         try {
           setReplay(await makeReplay(pending.name, pending.buffer, pending.source));
-          setInitial({ frame: pending.frame, speed: pending.speed, playing: pending.playing });
+          setInitial({ frame: pending.frame, speed: pending.speed, playing: pending.playing, exportJob: pending.exportJob });
         } catch (e) {
           setError(String(e.message ?? e));
         }
@@ -72,9 +72,10 @@ function Main() {
   };
 
   // Going backwards needs a fresh emulator: reload the page and fast-forward.
+  // `exportJob` reopens the export dialog there (exporting from an earlier frame).
   const rewind = useCallback(
-    async (frame, speed, playing) => {
-      await savePending({ name: replay.name, buffer: replay.buffer, source: replay.source, frame, speed, playing });
+    async (frame, speed, playing, exportJob) => {
+      await savePending({ name: replay.name, buffer: replay.buffer, source: replay.source, frame, speed, playing, exportJob });
       window.location.reload();
     },
     [replay],

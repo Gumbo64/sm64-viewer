@@ -25,7 +25,7 @@ async function tx(mode, fn) {
   });
 }
 
-/** `{ name, buffer, frame, speed, playing, source }` */
+/** `{ name, buffer, frame, speed, playing, source, exportJob? }` (exportJob: settings to reopen the export dialog with) */
 export function savePending(p) {
   return tx('readwrite', (s) => s.put(p, KEY));
 }
