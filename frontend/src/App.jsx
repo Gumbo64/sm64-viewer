@@ -4,11 +4,12 @@ import ReplayPicker from './components/ReplayPicker';
 import Viewer from './components/Viewer';
 import { parseReplay } from './lib/m64';
 import { savePending, takePending } from './lib/pending';
+import { regionsFor } from './lib/regions';
 
-function makeReplay(name, buffer, source) {
+async function makeReplay(name, buffer, source) {
   const { pads, header } = parseReplay(buffer);
   if (pads.length === 0) throw new Error(`${name} has no input frames.`);
-  return { name, buffer, source, pads, header };
+  return { name, buffer, source, pads, header, regions: await regionsFor(source, pads.length) };
 }
 
 function setQuery(params) {
@@ -30,7 +31,7 @@ function Main() {
       const r = await fetch(url);
       if (!r.ok) throw new Error(`HTTP ${r.status}`);
       const name = title ?? decodeURIComponent(url.split('/').pop() || 'replay.m64');
-      const rep = makeReplay(name, await r.arrayBuffer(), url);
+      const rep = await makeReplay(name, await r.arrayBuffer(), url);
       setQuery({ m64: url, start: start || undefined });
       setInitial({ frame: start, speed: 1, playing: true });
       setReplay(rep);
@@ -45,7 +46,7 @@ function Main() {
       const pending = await takePending();
       if (pending) {
         try {
-          setReplay(makeReplay(pending.name, pending.buffer, pending.source));
+          setReplay(await makeReplay(pending.name, pending.buffer, pending.source));
           setInitial({ frame: pending.frame, speed: pending.speed, playing: pending.playing });
         } catch (e) {
           setError(String(e.message ?? e));
@@ -61,7 +62,7 @@ function Main() {
   const loadFile = async (file) => {
     setError(null);
     try {
-      const rep = makeReplay(file.name, await file.arrayBuffer(), null);
+      const rep = await makeReplay(file.name, await file.arrayBuffer(), null);
       setQuery({});
       setInitial({ frame: 0, speed: 1, playing: true });
       setReplay(rep);

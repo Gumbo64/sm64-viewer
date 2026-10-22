@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Player, SPEEDS } from '../lib/player';
 import { formatTime } from '../lib/m64';
 import { courseName } from '../lib/sm64';
+import { regionAt } from '../lib/regions';
 import Hud from './Hud';
 import InputDisplay from './InputDisplay';
 import Timeline from './Timeline';
@@ -150,6 +151,7 @@ export default function Viewer({ replay, initial, onRewind, onClose }) {
   }, [view, seek, changeSpeed, fullscreen]);
 
   const p = player.current;
+  const region = view ? regionAt(replay.regions, view.frame) : null;
 
   return (
     <div className="viewer">
@@ -225,11 +227,21 @@ export default function Viewer({ replay, initial, onRewind, onClose }) {
                 frame={view.frame}
                 seekTarget={view.seekTarget}
                 events={view.events}
+                regions={replay.regions}
                 onSeek={seek}
               />
             </div>
           )}
           {showHud && view && <Hud frame={view.frame} total={view.total} state={view.state} />}
+          {showHud && region && (
+            <div className="region-chip" style={{ '--region': region.color }}>
+              <b>{region.label}</b>
+              <span className="mono muted">
+                {region.from}–{region.to}
+              </span>
+              {region.note && <span className="muted">{region.note}</span>}
+            </div>
+          )}
           {view?.seeking && (
             <div className="banner">
               Fast-forwarding to frame {view.seekTarget}… {Math.floor((100 * view.frame) / Math.max(1, view.seekTarget))}%
@@ -247,6 +259,21 @@ export default function Viewer({ replay, initial, onRewind, onClose }) {
           <aside className="panel">
             <h3>Input</h3>
             <InputDisplay pad={view?.pad} />
+            {replay.regions.length > 0 && (
+              <>
+                <h3>Regions</h3>
+                <ul className="events regions">
+                  {replay.regions.map((r) => (
+                    <li key={`${r.from}-${r.label}`} className={r === region ? 'current' : undefined}>
+                      <button className="link" onClick={() => seek(r.from)} title={r.note}>
+                        <span className="swatch" style={{ background: r.color }} />
+                        <span className="mono">{r.from}</span> {r.label}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
             <h3>Events</h3>
             {!view || view.events.length === 0 ? (
               <p className="muted small">Stars collected and course/area changes appear here as they're played.</p>
@@ -288,6 +315,7 @@ export default function Viewer({ replay, initial, onRewind, onClose }) {
             frame={view.frame}
             seekTarget={view.seekTarget}
             events={view.events}
+            regions={replay.regions}
             onSeek={seek}
           />
         )}

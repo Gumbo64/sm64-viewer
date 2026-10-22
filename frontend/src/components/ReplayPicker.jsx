@@ -57,6 +57,9 @@ function formatDay(day) {
  *   either an array of cells or { cells: [...], file, start } to make it open a replay
  * - `links`: [{ label, url }] (and `video`, shown as "Watch the video")
  * - `image`: a path in public/ or a URL, with optional `alt`
+ * - `regions`: [{ from, to?, label, note?, color? }] annotating frame ranges of the
+ *   replay (on an entry or a table row with a `file`), shown on the viewer's
+ *   timeline and over the picture; see lib/regions.js
  */
 function TimelineEntry({ ex, onUrl }) {
   const at = when(ex);

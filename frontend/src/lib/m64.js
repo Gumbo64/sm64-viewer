@@ -2,7 +2,7 @@
 //
 // Two layouts are accepted:
 //  - raw: 4 bytes per frame (big-endian u16 buttons, i8 stick x, i8 stick y),
-//    as written by sm64-AI-binds / sm64-twin;
+//    as written by sm64-AI-binds;
 //  - Mupen64 .m64: the same frames after a 0x400-byte header starting with
 //    "M64\x1A".
 
@@ -17,8 +17,10 @@ export function hasMupenHeader(bytes) {
 export function parseReplay(buffer) {
   let bytes = new Uint8Array(buffer);
   const header = hasMupenHeader(bytes);
+  // The header's input count (at 0x18): files can have padding after it.
+  const count = header ? new DataView(bytes.buffer, bytes.byteOffset).getUint32(0x18, true) : Infinity;
   if (header) bytes = bytes.subarray(M64_HEADER);
-  const n = Math.floor(bytes.length / 4);
+  const n = Math.min(count, Math.floor(bytes.length / 4));
   const pads = new Array(n);
   for (let i = 0; i < n; i++) {
     const o = i * 4;

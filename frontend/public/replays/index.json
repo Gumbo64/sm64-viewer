@@ -6,7 +6,71 @@
     "video": "https://www.youtube.com/watch?v=BnzeygHmNLI",
     "start": 0,
     "date": "2026-01-29",
-    "important": true
+    "important": true,
+    "regions": [
+      {
+        "from": 0,
+        "label": "Menus and intro",
+        "note": "Scripted (skip_menu_pads): menus, the intro and the letter. The search starts at frame 1,680.",
+        "color": "#8b93a7"
+      },
+      {
+        "from": 1680,
+        "label": "Castle Grounds",
+        "color": "#34d399"
+      },
+      {
+        "from": 37262,
+        "label": "Castle",
+        "color": "#f59e0b"
+      },
+      {
+        "from": 38539,
+        "label": "Bob-omb Battlefield",
+        "color": "#f472b6",
+        "note": "5 coins. Lost a life at frame 52,673."
+      },
+      {
+        "from": 52643,
+        "label": "Castle (2)",
+        "color": "#f59e0b"
+      },
+      {
+        "from": 54134,
+        "label": "Courtyard",
+        "color": "#a78bfa"
+      },
+      {
+        "from": 59427,
+        "label": "Castle (3)",
+        "color": "#f59e0b"
+      },
+      {
+        "from": 60704,
+        "label": "Courtyard (2)",
+        "color": "#a78bfa"
+      },
+      {
+        "from": 76370,
+        "label": "Castle (4)",
+        "color": "#f59e0b"
+      },
+      {
+        "from": 76753,
+        "label": "Courtyard (3)",
+        "color": "#a78bfa"
+      },
+      {
+        "from": 88243,
+        "label": "Castle (5)",
+        "color": "#f59e0b"
+      },
+      {
+        "from": 88667,
+        "label": "Courtyard (4)",
+        "color": "#a78bfa"
+      }
+    ]
   },
   {
     "date": "2026-10-19T01:25:00Z",
@@ -32,7 +96,31 @@
             "frame 34,486"
           ],
           "file": "bench-white.m64",
-          "start": 1680
+          "start": 1680,
+          "regions": [
+            {
+              "from": 0,
+              "label": "Menus and intro",
+              "note": "Scripted (skip_menu_pads): menus, the intro and the letter. The search starts at frame 1,680.",
+              "color": "#8b93a7"
+            },
+            {
+              "from": 1680,
+              "label": "Castle Grounds",
+              "color": "#34d399",
+              "note": "Lost a life at frame 34,086; respawning in front of the castle let it walk in."
+            },
+            {
+              "from": 34486,
+              "label": "Castle",
+              "color": "#f59e0b"
+            },
+            {
+              "from": 35340,
+              "label": "Courtyard",
+              "color": "#a78bfa"
+            }
+          ]
         },
         {
           "cells": [
@@ -44,7 +132,47 @@
             "frame 29,263"
           ],
           "file": "bench-pink.m64",
-          "start": 1680
+          "start": 1680,
+          "regions": [
+            {
+              "from": 0,
+              "label": "Menus and intro",
+              "note": "Scripted (skip_menu_pads): menus, the intro and the letter. The search starts at frame 1,680.",
+              "color": "#8b93a7"
+            },
+            {
+              "from": 1680,
+              "label": "Castle Grounds",
+              "color": "#34d399",
+              "note": "Lost a life at frame 28,849; respawning in front of the castle let it walk in."
+            },
+            {
+              "from": 29263,
+              "label": "Castle",
+              "color": "#f59e0b"
+            },
+            {
+              "from": 29737,
+              "label": "Bob-omb Battlefield",
+              "color": "#f472b6",
+              "note": "8 coins. Lost a life at frame 45,021."
+            },
+            {
+              "from": 44991,
+              "label": "Castle (2)",
+              "color": "#f59e0b"
+            },
+            {
+              "from": 47868,
+              "label": "Courtyard",
+              "color": "#a78bfa"
+            },
+            {
+              "from": 53716,
+              "label": "Castle (3)",
+              "color": "#f59e0b"
+            }
+          ]
         },
         {
           "cells": [
@@ -56,7 +184,41 @@
             "frame 38,783"
           ],
           "file": "bench-pink-block.m64",
-          "start": 1680
+          "start": 1680,
+          "regions": [
+            {
+              "from": 0,
+              "label": "Menus and intro",
+              "note": "Scripted (skip_menu_pads): menus, the intro and the letter. The search starts at frame 1,680.",
+              "color": "#8b93a7"
+            },
+            {
+              "from": 1680,
+              "label": "Castle Grounds",
+              "color": "#34d399"
+            },
+            {
+              "from": 38783,
+              "label": "Castle",
+              "color": "#f59e0b"
+            },
+            {
+              "from": 39685,
+              "label": "Courtyard",
+              "color": "#a78bfa"
+            },
+            {
+              "from": 45831,
+              "label": "Castle (2)",
+              "color": "#f59e0b"
+            },
+            {
+              "from": 47446,
+              "label": "Bob-omb Battlefield",
+              "color": "#f472b6",
+              "note": "6 coins."
+            }
+          ]
         },
         {
           "cells": [
@@ -68,7 +230,41 @@
             "frame 44,585"
           ],
           "file": "bench-white-block.m64",
-          "start": 1680
+          "start": 1680,
+          "regions": [
+            {
+              "from": 0,
+              "label": "Menus and intro",
+              "note": "Scripted (skip_menu_pads): menus, the intro and the letter. The search starts at frame 1,680.",
+              "color": "#8b93a7"
+            },
+            {
+              "from": 1680,
+              "label": "Castle Grounds",
+              "color": "#34d399"
+            },
+            {
+              "from": 44585,
+              "label": "Castle",
+              "color": "#f59e0b"
+            },
+            {
+              "from": 45761,
+              "label": "Courtyard",
+              "color": "#a78bfa"
+            },
+            {
+              "from": 52224,
+              "label": "Castle (2)",
+              "color": "#f59e0b"
+            },
+            {
+              "from": 53953,
+              "label": "Bob-omb Battlefield",
+              "color": "#f472b6",
+              "note": "0 coins."
+            }
+          ]
         }
       ],
       "highlight": [
@@ -108,7 +304,20 @@
             "\u2013"
           ],
           "file": "bench-pink-s2.m64",
-          "start": 1680
+          "start": 1680,
+          "regions": [
+            {
+              "from": 0,
+              "label": "Menus and intro",
+              "note": "Scripted (skip_menu_pads): menus, the intro and the letter. The search starts at frame 1,680.",
+              "color": "#8b93a7"
+            },
+            {
+              "from": 1680,
+              "label": "Castle Grounds",
+              "color": "#34d399"
+            }
+          ]
         },
         {
           "cells": [
@@ -120,7 +329,20 @@
             "\u2013"
           ],
           "file": "bench-brown-stick-s1.m64",
-          "start": 1680
+          "start": 1680,
+          "regions": [
+            {
+              "from": 0,
+              "label": "Menus and intro",
+              "note": "Scripted (skip_menu_pads): menus, the intro and the letter. The search starts at frame 1,680.",
+              "color": "#8b93a7"
+            },
+            {
+              "from": 1680,
+              "label": "Castle Grounds",
+              "color": "#34d399"
+            }
+          ]
         },
         {
           "cells": [
@@ -132,7 +354,41 @@
             "frame 35,323"
           ],
           "file": "bench-walk-s1.m64",
-          "start": 1680
+          "start": 1680,
+          "regions": [
+            {
+              "from": 0,
+              "label": "Menus and intro",
+              "note": "Scripted (skip_menu_pads): menus, the intro and the letter. The search starts at frame 1,680.",
+              "color": "#8b93a7"
+            },
+            {
+              "from": 1680,
+              "label": "Castle Grounds",
+              "color": "#34d399"
+            },
+            {
+              "from": 35323,
+              "label": "Castle",
+              "color": "#f59e0b"
+            },
+            {
+              "from": 36468,
+              "label": "Courtyard",
+              "color": "#a78bfa"
+            },
+            {
+              "from": 41787,
+              "label": "Castle (2)",
+              "color": "#f59e0b"
+            },
+            {
+              "from": 42835,
+              "label": "Bob-omb Battlefield",
+              "color": "#f472b6",
+              "note": "2 coins."
+            }
+          ]
         },
         {
           "cells": [
@@ -144,7 +400,42 @@
             "frame 37,452"
           ],
           "file": "bench-brown-s1.m64",
-          "start": 1680
+          "start": 1680,
+          "regions": [
+            {
+              "from": 0,
+              "label": "Menus and intro",
+              "note": "Scripted (skip_menu_pads): menus, the intro and the letter. The search starts at frame 1,680.",
+              "color": "#8b93a7"
+            },
+            {
+              "from": 1680,
+              "label": "Castle Grounds",
+              "color": "#34d399",
+              "note": "Lost a life at frame 37,046; respawning in front of the castle let it walk in."
+            },
+            {
+              "from": 37452,
+              "label": "Castle",
+              "color": "#f59e0b"
+            },
+            {
+              "from": 38548,
+              "label": "Courtyard",
+              "color": "#a78bfa"
+            },
+            {
+              "from": 43792,
+              "label": "Castle (2)",
+              "color": "#f59e0b"
+            },
+            {
+              "from": 44798,
+              "label": "Bob-omb Battlefield",
+              "color": "#f472b6",
+              "note": "2 coins."
+            }
+          ]
         }
       ],
       "highlight": [
@@ -154,51 +445,99 @@
     }
   },
   {
-    "date": "2026-10-19T08:48:00Z",
-    "title": "Noise benchmark: batch 2, still running",
-    "description": "The rest of the second batch, compared at 30,000 committed frames (about 16 game minutes), the point every run has reached. Voxels and horizontal cells are cumulative; numbers will change as the runs finish.",
-    "table": {
-      "columns": [
-        "Run",
-        "Voxels at 30k",
-        "Horizontal cells at 30k",
-        "Maps reached by 30k",
-        "Frames run",
-        "Status"
-      ],
-      "rows": [
-        {
-          "cells": [
-            "Brown, seed 2",
-            "1,856",
-            "1,060",
-            "Castle",
-            "30,090",
-            "running"
-          ]
-        },
-        {
-          "cells": [
-            "Brown-stick, seed 2",
-            "\u2013",
-            "\u2013",
-            "Castle Grounds",
-            "4,396",
-            "running"
-          ]
-        },
-        {
-          "cells": [
-            "White, seed 2",
-            "1,843",
-            "1,024",
-            "Castle Grounds",
-            "39,022",
-            "running"
-          ]
-        }
-      ],
-      "note": "Brown-stick seed 2 hasn't reached 30,000 frames yet. The two runs that stopped early (walk seed 1, brown seed 1) are in the completed table. Frame numbers include the 1,680 start-menu frames."
-    }
+    "date": "2026-10-21T09:56:00Z",
+    "title": "BoB coins after the curiosity run (42 coins)",
+    "description": "The first bob_coins run: replays the dddcuriosity curiosity run to frame 39,480 (Mario has just died out of BoB), then a GA finds the painting and the curiosity GA collects coins for 15 minutes. 42 coins in 5,740 frames.",
+    "file": "bob-coins-port-42.m64",
+    "start": 39400,
+    "regions": [
+      {
+        "from": 0,
+        "label": "Menus and intro",
+        "note": "Scripted (skip_menu_pads). Copied unchanged from the dddcuriosity curiosity run.",
+        "color": "#8b93a7"
+      },
+      {
+        "from": 1680,
+        "label": "Castle Grounds",
+        "note": "Copied unchanged from the dddcuriosity curiosity run. Drowned in the moat at frame 25,340; respawning in front of the castle let it walk in.",
+        "color": "#34d399"
+      },
+      {
+        "from": 25740,
+        "label": "Castle",
+        "note": "Copied unchanged from the dddcuriosity curiosity run.",
+        "color": "#f59e0b"
+      },
+      {
+        "from": 27395,
+        "label": "Courtyard",
+        "note": "Copied unchanged from the dddcuriosity curiosity run.",
+        "color": "#a78bfa"
+      },
+      {
+        "from": 33891,
+        "label": "Castle (2)",
+        "note": "Copied unchanged from the dddcuriosity curiosity run.",
+        "color": "#f59e0b"
+      },
+      {
+        "from": 34374,
+        "label": "Bob-omb Battlefield",
+        "note": "Copied unchanged from the dddcuriosity curiosity run. 7 coins, then died (life lost at frame 39,504, back in the castle).",
+        "color": "#f472b6"
+      },
+      {
+        "from": 39480,
+        "label": "Painting search",
+        "note": "bob_coins starts here: GA (512 \u00d7 150 frames) scored on reaching BoB, closeness to the painting and new 200-unit voxels.",
+        "color": "#60a5fa"
+      },
+      {
+        "from": 39683,
+        "label": "Star select and landing",
+        "note": "Scripted: A every 4th frame, then waiting for Mario to stand still.",
+        "color": "#8b93a7"
+      },
+      {
+        "from": 39762,
+        "label": "Coin search",
+        "note": "Curiosity GA (128 \u00d7 600 frames, 1-frame commit): 30 per coin + novelty, -5000 for a death. 42 coins.",
+        "color": "#22d3ee"
+      }
+    ]
+  },
+  {
+    "date": "2026-10-22T11:05:00Z",
+    "title": "Straight to BoB, then coins",
+    "description": "bob_coins from power-on: a GA searches its way into Bob-omb Battlefield through five waypoints, then the curiosity GA looks for coins for 15 minutes. 22 coins in 10,031 frames.",
+    "file": "bob-coins-direct-22.m64",
+    "start": 2800,
+    "regions": [
+      {
+        "from": 0,
+        "label": "Menus and intro",
+        "note": "skip_menu_pads: the fixed inputs every run starts with, then waiting for Mario to stand still.",
+        "color": "#8b93a7"
+      },
+      {
+        "from": 1690,
+        "label": "Route search to BoB",
+        "note": "GA (512 \u00d7 150 frames) through five waypoints: grounds centre line, top of the slope past the bridge, castle door, BoB room, painting.",
+        "color": "#60a5fa"
+      },
+      {
+        "from": 2825,
+        "label": "Star select and landing",
+        "note": "Scripted: A every 4th frame, then waiting for Mario to stand still.",
+        "color": "#8b93a7"
+      },
+      {
+        "from": 2904,
+        "label": "Coin search",
+        "note": "Curiosity GA (128 \u00d7 600 frames, 1-frame commit): 30 per coin + novelty, -5000 for a death. 22 coins.",
+        "color": "#22d3ee"
+      }
+    ]
   }
 ]

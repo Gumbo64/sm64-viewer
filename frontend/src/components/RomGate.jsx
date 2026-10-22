@@ -4,7 +4,7 @@ import {
   isRomCached,
   storeROM,
   updateWASMs,
-} from 'sm64-binds-frontend/src/scripts/fileUpload.js';
+} from 'sm64-binds-frontend';
 import DropZone from './DropZone';
 
 const EXPECTED_SHA1 = '9bef1128717f958171a4afac3ed78ee2bb4e86ce';

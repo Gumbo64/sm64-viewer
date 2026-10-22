@@ -2,7 +2,7 @@
 // fast-forward seeking and event detection. Going backwards needs a fresh
 // emulator, which the app does by reloading (see pending.js).
 
-import { Sm64VisualEngine } from 'sm64-binds-frontend/src/scripts/sm64/Sm64Game';
+import { Sm64VisualEngine } from 'sm64-binds-frontend';
 import { FPS } from './m64';
 import { ResolutionControl, loadResolution } from './resolution';
 

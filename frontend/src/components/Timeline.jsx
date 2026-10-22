@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { formatTime } from '../lib/m64';
+import { regionAt } from '../lib/regions';
 
 const LANES = [
   { mask: 0x8000, color: '#4ade80' }, // A
@@ -10,8 +11,10 @@ const LANES = [
 /**
  * Scrubbable timeline. The strip shows, per pixel column, stick magnitude
  * (grey) and A / B / Z presses (coloured lanes) of the frames it covers.
+ * Annotated `regions` (see lib/regions.js) get a labelled track above it;
+ * clicking one seeks to its start.
  */
-export default function Timeline({ pads, frame, seekTarget, events, onSeek }) {
+export default function Timeline({ pads, frame, seekTarget, events, regions = [], onSeek }) {
   const strip = useRef(null);
   const wrap = useRef(null);
   const [width, setWidth] = useState(800);
@@ -74,32 +77,52 @@ export default function Timeline({ pads, frame, seekTarget, events, onSeek }) {
     return Math.round(Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)) * total);
   };
   const pct = (f) => `${(100 * f) / Math.max(1, total)}%`;
+  const current = regionAt(regions, frame);
+  const hovered = hover !== null ? regionAt(regions, hover) : null;
 
   return (
-    <div
-      className="timeline"
-      ref={wrap}
-      onMouseMove={(e) => setHover(frameAt(e))}
-      onMouseLeave={() => setHover(null)}
-      onClick={(e) => onSeek(frameAt(e))}
-    >
-      <canvas ref={strip} className="strip" style={{ width: '100%', height: 36 }} />
-      <div className="played" style={{ width: pct(frame) }} />
-      {seekTarget !== null && <div className="target" style={{ left: pct(seekTarget) }} />}
-      {events.map((ev, i) => (
-        <div
-          key={i}
-          className={`marker ${ev.kind}`}
-          style={{ left: pct(ev.frame) }}
-          title={`${ev.kind === 'star' ? ev.label : 'Area change'} — frame ${ev.frame}`}
-        />
-      ))}
-      <div className="playhead" style={{ left: pct(frame) }} />
-      {hover !== null && (
-        <div className="hover" style={{ left: pct(hover) }}>
-          {hover} · {formatTime(hover)}
+    <div className="timeline-wrap">
+      {regions.length > 0 && (
+        <div className="region-track">
+          {regions.map((r) => (
+            <button
+              key={`${r.from}-${r.label}`}
+              className={`region${r === current ? ' current' : ''}`}
+              style={{ left: pct(r.from), width: pct(r.to - r.from), '--region': r.color }}
+              title={`${r.label}: frames ${r.from}–${r.to}${r.note ? `\n${r.note}` : ''}`}
+              onClick={() => onSeek(r.from)}
+            >
+              <span>{r.label}</span>
+            </button>
+          ))}
         </div>
       )}
+      <div
+        className="timeline"
+        ref={wrap}
+        onMouseMove={(e) => setHover(frameAt(e))}
+        onMouseLeave={() => setHover(null)}
+        onClick={(e) => onSeek(frameAt(e))}
+      >
+        <canvas ref={strip} className="strip" style={{ width: '100%', height: 36 }} />
+        <div className="played" style={{ width: pct(frame) }} />
+        {seekTarget !== null && <div className="target" style={{ left: pct(seekTarget) }} />}
+        {events.map((ev, i) => (
+          <div
+            key={i}
+            className={`marker ${ev.kind}`}
+            style={{ left: pct(ev.frame) }}
+            title={`${ev.kind === 'star' ? ev.label : 'Area change'} — frame ${ev.frame}`}
+          />
+        ))}
+        <div className="playhead" style={{ left: pct(frame) }} />
+        {hover !== null && (
+          <div className="hover" style={{ left: pct(hover) }}>
+            {hover} · {formatTime(hover)}
+            {hovered && ` · ${hovered.label}`}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

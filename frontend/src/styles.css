@@ -434,6 +434,74 @@ button.link:hover {
   pointer-events: none;
 }
 
+/* Annotated regions (index.json `regions`) */
+.timeline-wrap {
+  display: grid;
+  gap: 3px;
+}
+.region-track {
+  position: relative;
+  height: 18px;
+}
+.region {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  min-width: 2px;
+  padding: 0 4px;
+  border: none;
+  border-left: 2px solid var(--region);
+  border-radius: 0;
+  background: color-mix(in srgb, var(--region) 18%, transparent);
+  color: var(--muted);
+  font-size: 0.7rem;
+  line-height: 18px;
+  text-align: left;
+  overflow: hidden;
+  cursor: pointer;
+}
+.region span {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.region-track .region:hover,
+.region-track .region.current {
+  border-color: var(--region);
+  background: color-mix(in srgb, var(--region) 35%, transparent);
+  color: var(--text);
+}
+/* Bottom left: the one corner the game's own HUD leaves empty. */
+.region-chip {
+  position: absolute;
+  bottom: 0.75rem;
+  left: 0.75rem;
+  max-width: min(28rem, calc(100% - 1.5rem));
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.15rem 0.6rem;
+  align-items: baseline;
+  background: rgba(10, 12, 18, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: 3px solid var(--region);
+  border-radius: 8px;
+  padding: 0.4rem 0.7rem;
+  font-size: 0.8rem;
+  pointer-events: none;
+  backdrop-filter: blur(4px);
+}
+.regions li.current button {
+  color: var(--accent);
+}
+.regions .swatch {
+  display: inline-block;
+  width: 0.6rem;
+  height: 0.6rem;
+  margin-right: 0.35rem;
+  border-radius: 2px;
+}
+
 @media (max-width: 800px) {
   .panel {
     display: none;

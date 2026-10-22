@@ -8,16 +8,18 @@
     "dev:host": "vite --host",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:tas": "SM64_BINDS_FRONTEND=${SM64_BINDS_FRONTEND:-../../sm64-binds/javascript} xvfb-run -a node --test tests/tas.test.js"
   },
   "dependencies": {
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "sm64-binds-frontend": "^1.0.24",
+    "sm64-binds-frontend": "^2.0.1",
     "vite-plugin-wasm": "^3.5.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
+    "@playwright/test": "^1.48.2",
     "@types/react": "^19.1.16",
     "@types/react-dom": "^19.1.9",
     "@vitejs/plugin-react": "^5.0.4",
