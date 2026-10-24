@@ -301,7 +301,7 @@
             "1,634 / 954",
             "2,391 / 1,182",
             "Castle Grounds",
-            "\u2013"
+            "–"
           ],
           "file": "bench-pink-s2.m64",
           "start": 1680,
@@ -326,7 +326,7 @@
             "1,705 / 971",
             "2,418 / 1,197",
             "Castle Grounds",
-            "\u2013"
+            "–"
           ],
           "file": "bench-brown-stick-s1.m64",
           "start": 1680,
@@ -490,7 +490,7 @@
       {
         "from": 39480,
         "label": "Painting search",
-        "note": "bob_coins starts here: GA (512 \u00d7 150 frames) scored on reaching BoB, closeness to the painting and new 200-unit voxels.",
+        "note": "bob_coins starts here: GA (512 × 150 frames) scored on reaching BoB, closeness to the painting and new 200-unit voxels.",
         "color": "#60a5fa"
       },
       {
@@ -502,7 +502,7 @@
       {
         "from": 39762,
         "label": "Coin search",
-        "note": "Curiosity GA (128 \u00d7 600 frames, 1-frame commit): 30 per coin + novelty, -5000 for a death. 42 coins.",
+        "note": "Curiosity GA (128 × 600 frames, 1-frame commit): 30 per coin + novelty, -5000 for a death. 42 coins.",
         "color": "#22d3ee"
       }
     ]
@@ -523,7 +523,7 @@
       {
         "from": 1690,
         "label": "Route search to BoB",
-        "note": "GA (512 \u00d7 150 frames) through five waypoints: grounds centre line, top of the slope past the bridge, castle door, BoB room, painting.",
+        "note": "GA (512 × 150 frames) through five waypoints: grounds centre line, top of the slope past the bridge, castle door, BoB room, painting.",
         "color": "#60a5fa"
       },
       {
@@ -535,9 +535,1295 @@
       {
         "from": 2904,
         "label": "Coin search",
-        "note": "Curiosity GA (128 \u00d7 600 frames, 1-frame commit): 30 per coin + novelty, -5000 for a death. 22 coins.",
+        "note": "Curiosity GA (128 × 600 frames, 1-frame commit): 30 per coin + novelty, -5000 for a death. 22 coins.",
         "color": "#22d3ee"
       }
     ]
+  },
+  {
+    "date": "2026-10-22T18:33:00Z",
+    "title": "Objective-based RRT: first star",
+    "description": "Objective-based RRT from power-on to King Bob-omb's star (\"Big Bob-omb on the Summit\"). Two chained runs: v5 climbed to the summit in 8 minutes of search, then king2 grabbed and threw the King three times in 6 minutes. 6,100 frames.",
+    "file": "obrrt-first-star.m64",
+    "start": 1690,
+    "important": true,
+    "regions": [
+      {
+        "from": 0,
+        "label": "Menus and intro",
+        "note": "Fixed boot inputs, then waiting for Mario to be still and controllable.",
+        "color": "#8b93a7"
+      },
+      {
+        "from": 1690,
+        "label": "Run v5: castle to the summit",
+        "note": "Objective pool (PosDist, Painting::Enter, coins, doors…) grows the tree into BoB and up the mountain.",
+        "color": "#4c8bf5"
+      },
+      {
+        "from": 4432,
+        "label": "Run king2: King Bob-omb",
+        "note": "Boss::Hit from behind: grab with B, throw; three hits, then Star::Collect.",
+        "color": "#e8a33d"
+      }
+    ]
+  },
+  {
+    "date": "2026-10-23T12:00:00Z",
+    "title": "Objective-based RRT: first success per run",
+    "description": "Each search run of Objective-based RRT (sm64-AI-binds/objective-rrt). A cell is the game time, from power-on, of the run's first success of that objective type; click it to watch that replay (it starts 15 s before the end). king1 and king2 continued from v5's summit state.",
+    "important": true,
+    "table": {
+      "columns": [
+        "Run",
+        "Start",
+        "Search (min)",
+        "States",
+        "Mario::​PosDist",
+        "Mario::​PosTime",
+        "Mario::​Settle",
+        "Mario::​Wait",
+        "Mario::​GoToCastle",
+        "Door::​Enter",
+        "Painting::​Enter",
+        "Coin::​Collect",
+        "Enemy::​Defeat",
+        "Object::​Grab",
+        "Npc::​Talk",
+        "Boss::​Hit",
+        "Star::​Collect",
+        "Dialog::​No",
+        "Dialog::​Read",
+        "Dialog::​Yes",
+        "Menu::​SaveAndContinue",
+        "Menu::​SelectAct"
+      ],
+      "rows": [
+        {
+          "cells": [
+            "v1",
+            "power-on",
+            3.0,
+            13306,
+            {
+              "text": "0:57.4",
+              "file": "obrrt/v1/first-Mario-PosDist.m64",
+              "start": 1271,
+              "title": "v1: first Mario::PosDist at frame 1,721 (0:57.4 from power-on). Click to play."
+            },
+            "—",
+            {
+              "text": "0:58.0",
+              "file": "obrrt/v1/first-Mario-Settle.m64",
+              "start": 1289,
+              "title": "v1: first Mario::Settle at frame 1,739 (0:58.0 from power-on). Click to play."
+            },
+            {
+              "text": "0:57.3",
+              "file": "obrrt/v1/first-Mario-Wait.m64",
+              "start": 1270,
+              "title": "v1: first Mario::Wait at frame 1,720 (0:57.3 from power-on). Click to play."
+            },
+            {
+              "text": "1:47.9",
+              "file": "obrrt/v1/first-Mario-GoToCastle.m64",
+              "start": 2787,
+              "title": "v1: first Mario::GoToCastle at frame 3,237 (1:47.9 from power-on). Click to play."
+            },
+            {
+              "text": "1:22.2",
+              "file": "obrrt/v1/first-Door-Enter.m64",
+              "start": 2015,
+              "title": "v1: first Door::Enter at frame 2,465 (1:22.2 from power-on). Click to play."
+            },
+            {
+              "text": "1:46.0",
+              "file": "obrrt/v1/first-Painting-Enter.m64",
+              "start": 2730,
+              "title": "v1: first Painting::Enter at frame 3,180 (1:46.0 from power-on). Click to play."
+            },
+            {
+              "text": "1:24.9",
+              "file": "obrrt/v1/first-Coin-Collect.m64",
+              "start": 2098,
+              "title": "v1: first Coin::Collect at frame 2,548 (1:24.9 from power-on). Click to play."
+            },
+            "—",
+            "—",
+            "—",
+            "—",
+            "—",
+            "—",
+            "—",
+            "—",
+            "—",
+            "—"
+          ]
+        },
+        {
+          "cells": [
+            "v2",
+            "power-on",
+            3.0,
+            1489,
+            {
+              "text": "0:57.4",
+              "file": "obrrt/v2/first-Mario-PosDist.m64",
+              "start": 1271,
+              "title": "v2: first Mario::PosDist at frame 1,721 (0:57.4 from power-on). Click to play."
+            },
+            "—",
+            {
+              "text": "0:58.7",
+              "file": "obrrt/v2/first-Mario-Settle.m64",
+              "start": 1312,
+              "title": "v2: first Mario::Settle at frame 1,762 (0:58.7 from power-on). Click to play."
+            },
+            "—",
+            "—",
+            {
+              "text": "1:19.3",
+              "file": "obrrt/v2/first-Door-Enter.m64",
+              "start": 1929,
+              "title": "v2: first Door::Enter at frame 2,379 (1:19.3 from power-on). Click to play."
+            },
+            {
+              "text": "1:38.4",
+              "file": "obrrt/v2/first-Painting-Enter.m64",
+              "start": 2502,
+              "title": "v2: first Painting::Enter at frame 2,952 (1:38.4 from power-on). Click to play."
+            },
+            {
+              "text": "1:21.3",
+              "file": "obrrt/v2/first-Coin-Collect.m64",
+              "start": 1988,
+              "title": "v2: first Coin::Collect at frame 2,438 (1:21.3 from power-on). Click to play."
+            },
+            "—",
+            "—",
+            "—",
+            "—",
+            "—",
+            "—",
+            "—",
+            "—",
+            "—",
+            "—"
+          ]
+        },
+        {
+          "cells": [
+            "v3",
+            "power-on",
+            6.0,
+            10412,
+            {
+              "text": "0:58.8",
+              "file": "obrrt/v3/first-Mario-PosDist.m64",
+              "start": 1313,
+              "title": "v3: first Mario::PosDist at frame 1,763 (0:58.8 from power-on). Click to play."
+            },
+            "—",
+            {
+              "text": "1:00.6",
+              "file": "obrrt/v3/first-Mario-Settle.m64",
+              "start": 1367,
+              "title": "v3: first Mario::Settle at frame 1,817 (1:00.6 from power-on). Click to play."
+            },
+            {
+              "text": "1:48.7",
+              "file": "obrrt/v3/first-Mario-Wait.m64",
+              "start": 2811,
+              "title": "v3: first Mario::Wait at frame 3,261 (1:48.7 from power-on). Click to play."
+            },
+            {
+              "text": "1:46.5",
+              "file": "obrrt/v3/first-Mario-GoToCastle.m64",
+              "start": 2746,
+              "title": "v3: first Mario::GoToCastle at frame 3,196 (1:46.5 from power-on). Click to play."
+            },
+            {
+              "text": "1:19.7",
+              "file": "obrrt/v3/first-Door-Enter.m64",
+              "start": 1941,
+              "title": "v3: first Door::Enter at frame 2,391 (1:19.7 from power-on). Click to play."
+            },
+            {
+              "text": "1:37.1",
+              "file": "obrrt/v3/first-Painting-Enter.m64",
+              "start": 2464,
+              "title": "v3: first Painting::Enter at frame 2,914 (1:37.1 from power-on). Click to play."
+            },
+            {
+              "text": "1:33.5",
+              "file": "obrrt/v3/first-Coin-Collect.m64",
+              "start": 2354,
+              "title": "v3: first Coin::Collect at frame 2,804 (1:33.5 from power-on). Click to play."
+            },
+            "—",
+            "—",
+            "—",
+            "—",
+            "—",
+            "—",
+            "—",
+            "—",
+            "—",
+            "—"
+          ]
+        },
+        {
+          "cells": [
+            "v4",
+            "power-on",
+            8.0,
+            22064,
+            {
+              "text": "0:58.6",
+              "file": "obrrt/v4/first-Mario-PosDist.m64",
+              "start": 1308,
+              "title": "v4: first Mario::PosDist at frame 1,758 (0:58.6 from power-on). Click to play."
+            },
+            "—",
+            {
+              "text": "0:58.2",
+              "file": "obrrt/v4/first-Mario-Settle.m64",
+              "start": 1295,
+              "title": "v4: first Mario::Settle at frame 1,745 (0:58.2 from power-on). Click to play."
+            },
+            {
+              "text": "2:01.1",
+              "file": "obrrt/v4/first-Mario-Wait.m64",
+              "start": 3184,
+              "title": "v4: first Mario::Wait at frame 3,634 (2:01.1 from power-on). Click to play."
+            },
+            {
+              "text": "1:45.8",
+              "file": "obrrt/v4/first-Mario-GoToCastle.m64",
+              "start": 2724,
+              "title": "v4: first Mario::GoToCastle at frame 3,174 (1:45.8 from power-on). Click to play."
+            },
+            {
+              "text": "1:19.4",
+              "file": "obrrt/v4/first-Door-Enter.m64",
+              "start": 1931,
+              "title": "v4: first Door::Enter at frame 2,381 (1:19.4 from power-on). Click to play."
+            },
+            {
+              "text": "1:34.8",
+              "file": "obrrt/v4/first-Painting-Enter.m64",
+              "start": 2393,
+              "title": "v4: first Painting::Enter at frame 2,843 (1:34.8 from power-on). Click to play."
+            },
+            {
+              "text": "1:22.9",
+              "file": "obrrt/v4/first-Coin-Collect.m64",
+              "start": 2036,
+              "title": "v4: first Coin::Collect at frame 2,486 (1:22.9 from power-on). Click to play."
+            },
+            "—",
+            {
+              "text": "1:37.7",
+              "file": "obrrt/v4/first-Object-Grab.m64",
+              "start": 2481,
+              "title": "v4: first Object::Grab at frame 2,931 (1:37.7 from power-on). Click to play."
+            },
+            "—",
+            "—",
+            "—",
+            "—",
+            "—",
+            "—",
+            "—",
+            "—"
+          ]
+        },
+        {
+          "cells": [
+            "v5",
+            "power-on",
+            8.0,
+            24251,
+            {
+              "text": "0:58.6",
+              "file": "obrrt/v5/first-Mario-PosDist.m64",
+              "start": 1308,
+              "title": "v5: first Mario::PosDist at frame 1,758 (0:58.6 from power-on). Click to play."
+            },
+            "—",
+            {
+              "text": "0:58.2",
+              "file": "obrrt/v5/first-Mario-Settle.m64",
+              "start": 1295,
+              "title": "v5: first Mario::Settle at frame 1,745 (0:58.2 from power-on). Click to play."
+            },
+            {
+              "text": "1:20.9",
+              "file": "obrrt/v5/first-Mario-Wait.m64",
+              "start": 1976,
+              "title": "v5: first Mario::Wait at frame 2,426 (1:20.9 from power-on). Click to play."
+            },
+            {
+              "text": "1:44.0",
+              "file": "obrrt/v5/first-Mario-GoToCastle.m64",
+              "start": 2671,
+              "title": "v5: first Mario::GoToCastle at frame 3,121 (1:44.0 from power-on). Click to play."
+            },
+            {
+              "text": "1:18.8",
+              "file": "obrrt/v5/first-Door-Enter.m64",
+              "start": 1913,
+              "title": "v5: first Door::Enter at frame 2,363 (1:18.8 from power-on). Click to play."
+            },
+            {
+              "text": "1:33.7",
+              "file": "obrrt/v5/first-Painting-Enter.m64",
+              "start": 2360,
+              "title": "v5: first Painting::Enter at frame 2,810 (1:33.7 from power-on). Click to play."
+            },
+            {
+              "text": "1:21.0",
+              "file": "obrrt/v5/first-Coin-Collect.m64",
+              "start": 1979,
+              "title": "v5: first Coin::Collect at frame 2,429 (1:21.0 from power-on). Click to play."
+            },
+            "—",
+            {
+              "text": "1:38.0",
+              "file": "obrrt/v5/first-Object-Grab.m64",
+              "start": 2490,
+              "title": "v5: first Object::Grab at frame 2,940 (1:38.0 from power-on). Click to play."
+            },
+            "—",
+            "—",
+            "—",
+            "—",
+            "—",
+            "—",
+            "—",
+            "—"
+          ]
+        },
+        {
+          "cells": [
+            "v6",
+            "power-on",
+            20.0,
+            63164,
+            {
+              "text": "0:58.6",
+              "file": "obrrt/v6/first-Mario-PosDist.m64",
+              "start": 1308,
+              "title": "v6: first Mario::PosDist at frame 1,758 (0:58.6 from power-on). Click to play."
+            },
+            "—",
+            {
+              "text": "0:58.2",
+              "file": "obrrt/v6/first-Mario-Settle.m64",
+              "start": 1295,
+              "title": "v6: first Mario::Settle at frame 1,745 (0:58.2 from power-on). Click to play."
+            },
+            {
+              "text": "1:22.3",
+              "file": "obrrt/v6/first-Mario-Wait.m64",
+              "start": 2020,
+              "title": "v6: first Mario::Wait at frame 2,470 (1:22.3 from power-on). Click to play."
+            },
+            {
+              "text": "1:51.1",
+              "file": "obrrt/v6/first-Mario-GoToCastle.m64",
+              "start": 2883,
+              "title": "v6: first Mario::GoToCastle at frame 3,333 (1:51.1 from power-on). Click to play."
+            },
+            {
+              "text": "1:19.4",
+              "file": "obrrt/v6/first-Door-Enter.m64",
+              "start": 1931,
+              "title": "v6: first Door::Enter at frame 2,381 (1:19.4 from power-on). Click to play."
+            },
+            {
+              "text": "1:34.8",
+              "file": "obrrt/v6/first-Painting-Enter.m64",
+              "start": 2393,
+              "title": "v6: first Painting::Enter at frame 2,843 (1:34.8 from power-on). Click to play."
+            },
+            {
+              "text": "1:22.9",
+              "file": "obrrt/v6/first-Coin-Collect.m64",
+              "start": 2036,
+              "title": "v6: first Coin::Collect at frame 2,486 (1:22.9 from power-on). Click to play."
+            },
+            "—",
+            {
+              "text": "1:38.2",
+              "file": "obrrt/v6/first-Object-Grab.m64",
+              "start": 2495,
+              "title": "v6: first Object::Grab at frame 2,945 (1:38.2 from power-on). Click to play."
+            },
+            "—",
+            {
+              "text": "2:35.0",
+              "file": "obrrt/v6/first-Boss-Hit.m64",
+              "start": 4200,
+              "title": "v6: first Boss::Hit at frame 4,650 (2:35.0 from power-on). Click to play."
+            },
+            "—",
+            "—",
+            "—",
+            "—",
+            "—",
+            "—"
+          ]
+        },
+        {
+          "cells": [
+            "v7",
+            "power-on",
+            20.0,
+            44857,
+            {
+              "text": "0:59.3",
+              "file": "obrrt/v7/first-Mario-PosDist.m64",
+              "start": 1329,
+              "title": "v7: first Mario::PosDist at frame 1,779 (0:59.3 from power-on). Click to play."
+            },
+            "—",
+            {
+              "text": "0:59.5",
+              "file": "obrrt/v7/first-Mario-Settle.m64",
+              "start": 1334,
+              "title": "v7: first Mario::Settle at frame 1,784 (0:59.5 from power-on). Click to play."
+            },
+            {
+              "text": "1:46.0",
+              "file": "obrrt/v7/first-Mario-Wait.m64",
+              "start": 2730,
+              "title": "v7: first Mario::Wait at frame 3,180 (1:46.0 from power-on). Click to play."
+            },
+            {
+              "text": "1:44.2",
+              "file": "obrrt/v7/first-Mario-GoToCastle.m64",
+              "start": 2676,
+              "title": "v7: first Mario::GoToCastle at frame 3,126 (1:44.2 from power-on). Click to play."
+            },
+            {
+              "text": "1:17.8",
+              "file": "obrrt/v7/first-Door-Enter.m64",
+              "start": 1885,
+              "title": "v7: first Door::Enter at frame 2,335 (1:17.8 from power-on). Click to play."
+            },
+            {
+              "text": "1:37.9",
+              "file": "obrrt/v7/first-Painting-Enter.m64",
+              "start": 2486,
+              "title": "v7: first Painting::Enter at frame 2,936 (1:37.9 from power-on). Click to play."
+            },
+            {
+              "text": "1:23.0",
+              "file": "obrrt/v7/first-Coin-Collect.m64",
+              "start": 2041,
+              "title": "v7: first Coin::Collect at frame 2,491 (1:23.0 from power-on). Click to play."
+            },
+            {
+              "text": "1:44.2",
+              "file": "obrrt/v7/first-Enemy-Defeat.m64",
+              "start": 2677,
+              "title": "v7: first Enemy::Defeat at frame 3,127 (1:44.2 from power-on). Click to play."
+            },
+            {
+              "text": "1:39.7",
+              "file": "obrrt/v7/first-Object-Grab.m64",
+              "start": 2540,
+              "title": "v7: first Object::Grab at frame 2,990 (1:39.7 from power-on). Click to play."
+            },
+            "—",
+            {
+              "text": "2:44.8",
+              "file": "obrrt/v7/first-Boss-Hit.m64",
+              "start": 4493,
+              "title": "v7: first Boss::Hit at frame 4,943 (2:44.8 from power-on). Click to play."
+            },
+            "—",
+            "—",
+            "—",
+            "—",
+            "—",
+            "—"
+          ]
+        },
+        {
+          "cells": [
+            "v8",
+            "power-on",
+            20.0,
+            41378,
+            {
+              "text": "0:58.7",
+              "file": "obrrt/v8/first-Mario-PosDist.m64",
+              "start": 1311,
+              "title": "v8: first Mario::PosDist at frame 1,761 (0:58.7 from power-on). Click to play."
+            },
+            {
+              "text": "0:59.4",
+              "file": "obrrt/v8/first-Mario-PosTime.m64",
+              "start": 1331,
+              "title": "v8: first Mario::PosTime at frame 1,781 (0:59.4 from power-on). Click to play."
+            },
+            {
+              "text": "1:02.0",
+              "file": "obrrt/v8/first-Mario-Settle.m64",
+              "start": 1409,
+              "title": "v8: first Mario::Settle at frame 1,859 (1:02.0 from power-on). Click to play."
+            },
+            {
+              "text": "1:59.8",
+              "file": "obrrt/v8/first-Mario-Wait.m64",
+              "start": 3144,
+              "title": "v8: first Mario::Wait at frame 3,594 (1:59.8 from power-on). Click to play."
+            },
+            {
+              "text": "1:47.5",
+              "file": "obrrt/v8/first-Mario-GoToCastle.m64",
+              "start": 2776,
+              "title": "v8: first Mario::GoToCastle at frame 3,226 (1:47.5 from power-on). Click to play."
+            },
+            {
+              "text": "1:17.8",
+              "file": "obrrt/v8/first-Door-Enter.m64",
+              "start": 1883,
+              "title": "v8: first Door::Enter at frame 2,333 (1:17.8 from power-on). Click to play."
+            },
+            {
+              "text": "1:37.9",
+              "file": "obrrt/v8/first-Painting-Enter.m64",
+              "start": 2486,
+              "title": "v8: first Painting::Enter at frame 2,936 (1:37.9 from power-on). Click to play."
+            },
+            {
+              "text": "1:22.2",
+              "file": "obrrt/v8/first-Coin-Collect.m64",
+              "start": 2016,
+              "title": "v8: first Coin::Collect at frame 2,466 (1:22.2 from power-on). Click to play."
+            },
+            {
+              "text": "1:42.0",
+              "file": "obrrt/v8/first-Enemy-Defeat.m64",
+              "start": 2610,
+              "title": "v8: first Enemy::Defeat at frame 3,060 (1:42.0 from power-on). Click to play."
+            },
+            {
+              "text": "1:41.3",
+              "file": "obrrt/v8/first-Object-Grab.m64",
+              "start": 2588,
+              "title": "v8: first Object::Grab at frame 3,038 (1:41.3 from power-on). Click to play."
+            },
+            {
+              "text": "1:45.2",
+              "file": "obrrt/v8/first-Npc-Talk.m64",
+              "start": 2707,
+              "title": "v8: first Npc::Talk at frame 3,157 (1:45.2 from power-on). Click to play."
+            },
+            {
+              "text": "2:59.2",
+              "file": "obrrt/v8/first-Boss-Hit.m64",
+              "start": 4925,
+              "title": "v8: first Boss::Hit at frame 5,375 (2:59.2 from power-on). Click to play."
+            },
+            "—",
+            "—",
+            "—",
+            "—",
+            "—",
+            "—"
+          ]
+        },
+        {
+          "cells": [
+            "v9",
+            "power-on",
+            12.2,
+            35666,
+            {
+              "text": "0:58.7",
+              "file": "obrrt/v9/first-Mario-PosDist.m64",
+              "start": 1311,
+              "title": "v9: first Mario::PosDist at frame 1,761 (0:58.7 from power-on). Click to play."
+            },
+            {
+              "text": "0:59.4",
+              "file": "obrrt/v9/first-Mario-PosTime.m64",
+              "start": 1331,
+              "title": "v9: first Mario::PosTime at frame 1,781 (0:59.4 from power-on). Click to play."
+            },
+            {
+              "text": "1:02.0",
+              "file": "obrrt/v9/first-Mario-Settle.m64",
+              "start": 1409,
+              "title": "v9: first Mario::Settle at frame 1,859 (1:02.0 from power-on). Click to play."
+            },
+            {
+              "text": "1:20.3",
+              "file": "obrrt/v9/first-Mario-Wait.m64",
+              "start": 1960,
+              "title": "v9: first Mario::Wait at frame 2,410 (1:20.3 from power-on). Click to play."
+            },
+            "—",
+            {
+              "text": "1:21.1",
+              "file": "obrrt/v9/first-Door-Enter.m64",
+              "start": 1984,
+              "title": "v9: first Door::Enter at frame 2,434 (1:21.1 from power-on). Click to play."
+            },
+            "—",
+            "—",
+            "—",
+            "—",
+            "—",
+            "—",
+            "—",
+            "—",
+            "—",
+            "—",
+            "—",
+            "—"
+          ]
+        },
+        {
+          "cells": [
+            "v10",
+            "power-on",
+            20.0,
+            31643,
+            {
+              "text": "0:58.7",
+              "file": "obrrt/v10/first-Mario-PosDist.m64",
+              "start": 1311,
+              "title": "v10: first Mario::PosDist at frame 1,761 (0:58.7 from power-on). Click to play."
+            },
+            {
+              "text": "0:59.4",
+              "file": "obrrt/v10/first-Mario-PosTime.m64",
+              "start": 1331,
+              "title": "v10: first Mario::PosTime at frame 1,781 (0:59.4 from power-on). Click to play."
+            },
+            {
+              "text": "1:02.0",
+              "file": "obrrt/v10/first-Mario-Settle.m64",
+              "start": 1409,
+              "title": "v10: first Mario::Settle at frame 1,859 (1:02.0 from power-on). Click to play."
+            },
+            {
+              "text": "1:23.4",
+              "file": "obrrt/v10/first-Mario-Wait.m64",
+              "start": 2051,
+              "title": "v10: first Mario::Wait at frame 2,501 (1:23.4 from power-on). Click to play."
+            },
+            {
+              "text": "1:54.1",
+              "file": "obrrt/v10/first-Mario-GoToCastle.m64",
+              "start": 2973,
+              "title": "v10: first Mario::GoToCastle at frame 3,423 (1:54.1 from power-on). Click to play."
+            },
+            {
+              "text": "1:19.8",
+              "file": "obrrt/v10/first-Door-Enter.m64",
+              "start": 1945,
+              "title": "v10: first Door::Enter at frame 2,395 (1:19.8 from power-on). Click to play."
+            },
+            {
+              "text": "1:35.1",
+              "file": "obrrt/v10/first-Painting-Enter.m64",
+              "start": 2402,
+              "title": "v10: first Painting::Enter at frame 2,852 (1:35.1 from power-on). Click to play."
+            },
+            {
+              "text": "1:28.2",
+              "file": "obrrt/v10/first-Coin-Collect.m64",
+              "start": 2197,
+              "title": "v10: first Coin::Collect at frame 2,647 (1:28.2 from power-on). Click to play."
+            },
+            {
+              "text": "1:43.9",
+              "file": "obrrt/v10/first-Enemy-Defeat.m64",
+              "start": 2667,
+              "title": "v10: first Enemy::Defeat at frame 3,117 (1:43.9 from power-on). Click to play."
+            },
+            {
+              "text": "1:42.6",
+              "file": "obrrt/v10/first-Object-Grab.m64",
+              "start": 2629,
+              "title": "v10: first Object::Grab at frame 3,079 (1:42.6 from power-on). Click to play."
+            },
+            {
+              "text": "1:48.5",
+              "file": "obrrt/v10/first-Npc-Talk.m64",
+              "start": 2805,
+              "title": "v10: first Npc::Talk at frame 3,255 (1:48.5 from power-on). Click to play."
+            },
+            {
+              "text": "2:51.6",
+              "file": "obrrt/v10/first-Boss-Hit.m64",
+              "start": 4699,
+              "title": "v10: first Boss::Hit at frame 5,149 (2:51.6 from power-on). Click to play."
+            },
+            {
+              "text": "3:20.9",
+              "file": "obrrt/v10/first-Star-Collect.m64",
+              "start": 5578,
+              "title": "v10: first Star::Collect at frame 6,028 (3:20.9 from power-on). Click to play."
+            },
+            {
+              "text": "3:48.9",
+              "file": "obrrt/v10/first-Dialog-No.m64",
+              "start": 6416,
+              "title": "v10: first Dialog::No at frame 6,866 (3:48.9 from power-on). Click to play."
+            },
+            {
+              "text": "1:13.0",
+              "file": "obrrt/v10/first-Dialog-Read.m64",
+              "start": 1740,
+              "title": "v10: first Dialog::Read at frame 2,190 (1:13.0 from power-on). Click to play."
+            },
+            {
+              "text": "3:50.6",
+              "file": "obrrt/v10/first-Dialog-Yes.m64",
+              "start": 6467,
+              "title": "v10: first Dialog::Yes at frame 6,917 (3:50.6 from power-on). Click to play."
+            },
+            {
+              "text": "3:25.0",
+              "file": "obrrt/v10/first-Menu-SaveAndContinue.m64",
+              "start": 5701,
+              "title": "v10: first Menu::SaveAndContinue at frame 6,151 (3:25.0 from power-on). Click to play."
+            },
+            {
+              "text": "1:37.5",
+              "file": "obrrt/v10/first-Menu-SelectAct.m64",
+              "start": 2476,
+              "title": "v10: first Menu::SelectAct at frame 2,926 (1:37.5 from power-on). Click to play."
+            }
+          ]
+        },
+        {
+          "cells": [
+            "chain1",
+            "summit (v5)",
+            3.0,
+            6045,
+            {
+              "text": "2:41.4",
+              "file": "obrrt/chain1/first-Mario-PosDist.m64",
+              "start": 4391,
+              "title": "chain1: first Mario::PosDist at frame 4,841 (2:41.4 from power-on). Click to play."
+            },
+            {
+              "text": "2:30.1",
+              "file": "obrrt/chain1/first-Mario-PosTime.m64",
+              "start": 4054,
+              "title": "chain1: first Mario::PosTime at frame 4,504 (2:30.1 from power-on). Click to play."
+            },
+            {
+              "text": "2:38.9",
+              "file": "obrrt/chain1/first-Mario-Settle.m64",
+              "start": 4318,
+              "title": "chain1: first Mario::Settle at frame 4,768 (2:38.9 from power-on). Click to play."
+            },
+            {
+              "text": "2:44.6",
+              "file": "obrrt/chain1/first-Mario-Wait.m64",
+              "start": 4489,
+              "title": "chain1: first Mario::Wait at frame 4,939 (2:44.6 from power-on). Click to play."
+            },
+            {
+              "text": "2:41.2",
+              "file": "obrrt/chain1/first-Mario-GoToCastle.m64",
+              "start": 4387,
+              "title": "chain1: first Mario::GoToCastle at frame 4,837 (2:41.2 from power-on). Click to play."
+            },
+            {
+              "text": "2:49.9",
+              "file": "obrrt/chain1/first-Door-Enter.m64",
+              "start": 4647,
+              "title": "chain1: first Door::Enter at frame 5,097 (2:49.9 from power-on). Click to play."
+            },
+            {
+              "text": "3:05.3",
+              "file": "obrrt/chain1/first-Painting-Enter.m64",
+              "start": 5110,
+              "title": "chain1: first Painting::Enter at frame 5,560 (3:05.3 from power-on). Click to play."
+            },
+            {
+              "text": "2:44.2",
+              "file": "obrrt/chain1/first-Coin-Collect.m64",
+              "start": 4476,
+              "title": "chain1: first Coin::Collect at frame 4,926 (2:44.2 from power-on). Click to play."
+            },
+            {
+              "text": "2:52.7",
+              "file": "obrrt/chain1/first-Enemy-Defeat.m64",
+              "start": 4731,
+              "title": "chain1: first Enemy::Defeat at frame 5,181 (2:52.7 from power-on). Click to play."
+            },
+            {
+              "text": "2:45.7",
+              "file": "obrrt/chain1/first-Object-Grab.m64",
+              "start": 4520,
+              "title": "chain1: first Object::Grab at frame 4,970 (2:45.7 from power-on). Click to play."
+            },
+            {
+              "text": "3:11.3",
+              "file": "obrrt/chain1/first-Npc-Talk.m64",
+              "start": 5288,
+              "title": "chain1: first Npc::Talk at frame 5,738 (3:11.3 from power-on). Click to play."
+            },
+            {
+              "text": "2:38.6",
+              "file": "obrrt/chain1/first-Boss-Hit.m64",
+              "start": 4307,
+              "title": "chain1: first Boss::Hit at frame 4,757 (2:38.6 from power-on). Click to play."
+            },
+            {
+              "text": "3:45.0",
+              "file": "obrrt/chain1/first-Star-Collect.m64",
+              "start": 6299,
+              "title": "chain1: first Star::Collect at frame 6,749 (3:45.0 from power-on). Click to play."
+            },
+            "—",
+            "—",
+            "—",
+            "—",
+            "—"
+          ]
+        },
+        {
+          "cells": [
+            "king1",
+            "summit (v5)",
+            3.0,
+            9549,
+            {
+              "text": "2:31.5",
+              "file": "obrrt/king1/first-Mario-PosDist.m64",
+              "start": 4095,
+              "title": "king1: first Mario::PosDist at frame 4,545 (2:31.5 from power-on). Click to play."
+            },
+            "—",
+            {
+              "text": "2:31.1",
+              "file": "obrrt/king1/first-Mario-Settle.m64",
+              "start": 4084,
+              "title": "king1: first Mario::Settle at frame 4,534 (2:31.1 from power-on). Click to play."
+            },
+            {
+              "text": "2:44.8",
+              "file": "obrrt/king1/first-Mario-Wait.m64",
+              "start": 4493,
+              "title": "king1: first Mario::Wait at frame 4,943 (2:44.8 from power-on). Click to play."
+            },
+            {
+              "text": "2:33.4",
+              "file": "obrrt/king1/first-Mario-GoToCastle.m64",
+              "start": 4153,
+              "title": "king1: first Mario::GoToCastle at frame 4,603 (2:33.4 from power-on). Click to play."
+            },
+            {
+              "text": "2:38.6",
+              "file": "obrrt/king1/first-Door-Enter.m64",
+              "start": 4308,
+              "title": "king1: first Door::Enter at frame 4,758 (2:38.6 from power-on). Click to play."
+            },
+            "—",
+            {
+              "text": "2:32.8",
+              "file": "obrrt/king1/first-Coin-Collect.m64",
+              "start": 4134,
+              "title": "king1: first Coin::Collect at frame 4,584 (2:32.8 from power-on). Click to play."
+            },
+            "—",
+            {
+              "text": "2:35.6",
+              "file": "obrrt/king1/first-Object-Grab.m64",
+              "start": 4218,
+              "title": "king1: first Object::Grab at frame 4,668 (2:35.6 from power-on). Click to play."
+            },
+            "—",
+            {
+              "text": "2:40.4",
+              "file": "obrrt/king1/first-Boss-Hit.m64",
+              "start": 4362,
+              "title": "king1: first Boss::Hit at frame 4,812 (2:40.4 from power-on). Click to play."
+            },
+            "—",
+            "—",
+            "—",
+            "—",
+            "—",
+            "—"
+          ]
+        },
+        {
+          "cells": [
+            "king2",
+            "summit (v5)",
+            6.0,
+            20348,
+            {
+              "text": "2:31.5",
+              "file": "obrrt/king2/first-Mario-PosDist.m64",
+              "start": 4095,
+              "title": "king2: first Mario::PosDist at frame 4,545 (2:31.5 from power-on). Click to play."
+            },
+            "—",
+            {
+              "text": "2:31.1",
+              "file": "obrrt/king2/first-Mario-Settle.m64",
+              "start": 4084,
+              "title": "king2: first Mario::Settle at frame 4,534 (2:31.1 from power-on). Click to play."
+            },
+            {
+              "text": "2:56.9",
+              "file": "obrrt/king2/first-Mario-Wait.m64",
+              "start": 4857,
+              "title": "king2: first Mario::Wait at frame 5,307 (2:56.9 from power-on). Click to play."
+            },
+            {
+              "text": "2:33.4",
+              "file": "obrrt/king2/first-Mario-GoToCastle.m64",
+              "start": 4153,
+              "title": "king2: first Mario::GoToCastle at frame 4,603 (2:33.4 from power-on). Click to play."
+            },
+            {
+              "text": "2:38.6",
+              "file": "obrrt/king2/first-Door-Enter.m64",
+              "start": 4308,
+              "title": "king2: first Door::Enter at frame 4,758 (2:38.6 from power-on). Click to play."
+            },
+            {
+              "text": "3:30.7",
+              "file": "obrrt/king2/first-Painting-Enter.m64",
+              "start": 5871,
+              "title": "king2: first Painting::Enter at frame 6,321 (3:30.7 from power-on). Click to play."
+            },
+            {
+              "text": "2:32.8",
+              "file": "obrrt/king2/first-Coin-Collect.m64",
+              "start": 4134,
+              "title": "king2: first Coin::Collect at frame 4,584 (2:32.8 from power-on). Click to play."
+            },
+            "—",
+            {
+              "text": "2:35.6",
+              "file": "obrrt/king2/first-Object-Grab.m64",
+              "start": 4218,
+              "title": "king2: first Object::Grab at frame 4,668 (2:35.6 from power-on). Click to play."
+            },
+            "—",
+            {
+              "text": "2:40.4",
+              "file": "obrrt/king2/first-Boss-Hit.m64",
+              "start": 4362,
+              "title": "king2: first Boss::Hit at frame 4,812 (2:40.4 from power-on). Click to play."
+            },
+            {
+              "text": "3:23.3",
+              "file": "obrrt/king2/first-Star-Collect.m64",
+              "start": 5650,
+              "title": "king2: first Star::Collect at frame 6,100 (3:23.3 from power-on). Click to play."
+            },
+            "—",
+            "—",
+            "—",
+            "—",
+            "—"
+          ]
+        },
+        {
+          "cells": [
+            "modal1",
+            "summit (v5)",
+            2.0,
+            3389,
+            {
+              "text": "2:41.4",
+              "file": "obrrt/modal1/first-Mario-PosDist.m64",
+              "start": 4391,
+              "title": "modal1: first Mario::PosDist at frame 4,841 (2:41.4 from power-on). Click to play."
+            },
+            {
+              "text": "2:30.1",
+              "file": "obrrt/modal1/first-Mario-PosTime.m64",
+              "start": 4054,
+              "title": "modal1: first Mario::PosTime at frame 4,504 (2:30.1 from power-on). Click to play."
+            },
+            {
+              "text": "2:38.9",
+              "file": "obrrt/modal1/first-Mario-Settle.m64",
+              "start": 4318,
+              "title": "modal1: first Mario::Settle at frame 4,768 (2:38.9 from power-on). Click to play."
+            },
+            {
+              "text": "2:44.6",
+              "file": "obrrt/modal1/first-Mario-Wait.m64",
+              "start": 4489,
+              "title": "modal1: first Mario::Wait at frame 4,939 (2:44.6 from power-on). Click to play."
+            },
+            {
+              "text": "2:41.2",
+              "file": "obrrt/modal1/first-Mario-GoToCastle.m64",
+              "start": 4387,
+              "title": "modal1: first Mario::GoToCastle at frame 4,837 (2:41.2 from power-on). Click to play."
+            },
+            {
+              "text": "2:49.9",
+              "file": "obrrt/modal1/first-Door-Enter.m64",
+              "start": 4647,
+              "title": "modal1: first Door::Enter at frame 5,097 (2:49.9 from power-on). Click to play."
+            },
+            {
+              "text": "3:01.7",
+              "file": "obrrt/modal1/first-Painting-Enter.m64",
+              "start": 5001,
+              "title": "modal1: first Painting::Enter at frame 5,451 (3:01.7 from power-on). Click to play."
+            },
+            {
+              "text": "2:44.2",
+              "file": "obrrt/modal1/first-Coin-Collect.m64",
+              "start": 4476,
+              "title": "modal1: first Coin::Collect at frame 4,926 (2:44.2 from power-on). Click to play."
+            },
+            {
+              "text": "2:52.7",
+              "file": "obrrt/modal1/first-Enemy-Defeat.m64",
+              "start": 4731,
+              "title": "modal1: first Enemy::Defeat at frame 5,181 (2:52.7 from power-on). Click to play."
+            },
+            {
+              "text": "2:45.7",
+              "file": "obrrt/modal1/first-Object-Grab.m64",
+              "start": 4520,
+              "title": "modal1: first Object::Grab at frame 4,970 (2:45.7 from power-on). Click to play."
+            },
+            {
+              "text": "2:59.8",
+              "file": "obrrt/modal1/first-Npc-Talk.m64",
+              "start": 4943,
+              "title": "modal1: first Npc::Talk at frame 5,393 (2:59.8 from power-on). Click to play."
+            },
+            {
+              "text": "2:38.6",
+              "file": "obrrt/modal1/first-Boss-Hit.m64",
+              "start": 4307,
+              "title": "modal1: first Boss::Hit at frame 4,757 (2:38.6 from power-on). Click to play."
+            },
+            "—",
+            "—",
+            {
+              "text": "3:04.0",
+              "file": "obrrt/modal1/first-Dialog-Read.m64",
+              "start": 5069,
+              "title": "modal1: first Dialog::Read at frame 5,519 (3:04.0 from power-on). Click to play."
+            },
+            "—",
+            "—",
+            {
+              "text": "3:15.1",
+              "file": "obrrt/modal1/first-Menu-SelectAct.m64",
+              "start": 5402,
+              "title": "modal1: first Menu::SelectAct at frame 5,852 (3:15.1 from power-on). Click to play."
+            }
+          ]
+        }
+      ],
+      "note": "— means the run never completed that objective type. Times are game time at 30 frames per second, including the 1,690 frames of menus and intro. Generated by objective-rrt/tools/viewer_table.py."
+    }
+  },
+  {
+    "date": "2026-10-23T16:15:00Z",
+    "title": "Objective-based RRT: notable tree states",
+    "important": true,
+    "description": "Hand-picked states from Objective-based RRT tree runs. Finishing area is where Mario is at that state (the tree opens there, with the state selected); the replay plays from power-on to it.",
+    "table": {
+      "columns": [
+        "Run",
+        "State",
+        "Tree",
+        "Replay",
+        "Finishing area",
+        "Stars & keys",
+        "Game time",
+        "Note"
+      ],
+      "rows": [
+        {
+          "cells": [
+            "v33-fixA-route",
+            "#28669",
+            {
+              "text": "Open tree ▸",
+              "href": "?tree=v33-fixA-route&zone=6:1&node=28669",
+              "title": "The v33-fixA-route tree, at state #28669"
+            },
+            {
+              "text": "▶ Replay",
+              "file": "obrrt/nodes/v33-fixA-route-node-28669.m64",
+              "start": 0,
+              "title": "Power-on to state #28669 (13:07.5)"
+            },
+            "Castle",
+            "8★ 0🔑",
+            "13:07.5",
+            "First 8-star state: v33-fixA resumed 100 M frames with decay-route (adds a WF star)"
+          ]
+        },
+        {
+          "cells": [
+            "v33-fixA",
+            "#25992",
+            {
+              "text": "Open tree ▸",
+              "href": "?tree=v33-fixA&zone=6:1&node=25992",
+              "title": "The v33-fixA tree, at state #25992"
+            },
+            {
+              "text": "▶ Replay",
+              "file": "obrrt/nodes/v33-fixA-node-25992.m64",
+              "start": 0,
+              "title": "Power-on to state #25992 (11:41.2)"
+            },
+            "Castle",
+            "7★ 0🔑",
+            "11:41.2",
+            "First 7-star state: v32-chomp-s3 resumed to 1 B frames with the resume fix (adds a PSS star and a second WF star)"
+          ]
+        },
+        {
+          "cells": [
+            "v32-chomp-s3",
+            "#12679",
+            {
+              "text": "Open tree ▸",
+              "href": "?tree=v32-chomp-s3&zone=6:1&node=12679",
+              "title": "The v32-chomp-s3 tree, at state #12679"
+            },
+            {
+              "text": "▶ Replay",
+              "file": "obrrt/nodes/v32-chomp-s3-node-12679.m64",
+              "start": 0,
+              "title": "Power-on to state #12679 (9:11.6)"
+            },
+            "Castle",
+            "5★ 0🔑",
+            "9:11.6",
+            "First 5-star state within 500 M frames (Chomp fix + action-aware steering)"
+          ]
+        },
+        {
+          "cells": [
+            "v19-soft-1b",
+            "#24453",
+            {
+              "text": "Open tree ▸",
+              "href": "?tree=v19-soft-1b&zone=6:1&node=24453",
+              "title": "The v19-soft-1b tree, at state #24453"
+            },
+            {
+              "text": "▶ Replay",
+              "file": "obrrt/nodes/v19-soft-1b-node-24453.m64",
+              "start": 0,
+              "title": "Power-on to state #24453 (9:26.7)"
+            },
+            "Castle",
+            "6★ 0🔑",
+            "9:26.7",
+            "First 6-star state: v19 continued to 1 B frames (adds a PSS star and a second CCM star)"
+          ]
+        },
+        {
+          "cells": [
+            "v19-soft",
+            "#6999",
+            {
+              "text": "Open tree ▸",
+              "href": "?tree=v19-soft&zone=6:1&node=6999",
+              "title": "The v19-soft tree, at state #6999"
+            },
+            {
+              "text": "▶ Replay",
+              "file": "obrrt/nodes/v19-soft-node-6999.m64",
+              "start": 0,
+              "title": "Power-on to state #6999 (6:33.8)"
+            },
+            "Castle",
+            "4★ 0🔑",
+            "6:33.8",
+            "First 4-star state: Chomp, two WF stars, a CCM star (soft dedupe)"
+          ]
+        },
+        {
+          "cells": [
+            "v17-gated",
+            "#9745",
+            {
+              "text": "Open tree ▸",
+              "href": "?tree=v17-gated&zone=24:1&node=9745",
+              "title": "The v17-gated tree, at state #9745 in Whomp's Fortress"
+            },
+            {
+              "text": "▶ Replay",
+              "file": "obrrt/nodes/v17-gated-node-9745.m64",
+              "start": 0,
+              "title": "Power-on to state #9745 (6:28.2)"
+            },
+            "Whomp's Fortress",
+            "2★ 0🔑",
+            "6:28.2",
+            "First run past one star: BoB Chain Chomp star, then WF"
+          ]
+        },
+        {
+          "cells": [
+            "v20-round128",
+            "#7858",
+            {
+              "text": "Open tree ▸",
+              "href": "?tree=v20-round128&zone=24:1&node=7858",
+              "title": "The v20-round128 tree, at state #7858 in Whomp's Fortress"
+            },
+            {
+              "text": "▶ Replay",
+              "file": "obrrt/nodes/v20-round128-node-7858.m64",
+              "start": 0,
+              "title": "Power-on to state #7858 (4:38.6)"
+            },
+            "Whomp's Fortress",
+            "1★ 0🔑",
+            "4:38.6",
+            "Collecting a WF star (batch size 128)"
+          ]
+        },
+        {
+          "cells": [
+            "v14-pickb",
+            "#12677",
+            {
+              "text": "Open tree ▸",
+              "href": "?tree=v14-pickb&zone=27:1&node=12677",
+              "title": "The v14-pickb tree, at state #12677 in Peach's Secret Slide"
+            },
+            {
+              "text": "▶ Replay",
+              "file": "obrrt/nodes/v14-pickb-node-12677.m64",
+              "start": 0,
+              "title": "Power-on to state #12677 (4:04.9)"
+            },
+            "Peach's Secret Slide",
+            "1★ 0🔑",
+            "4:04.9",
+            "Into PSS after the Chomp star (pick-by-b)"
+          ]
+        }
+      ],
+      "note": "Trees load from the live tree server when it runs, else from the static exports in public/trees (tools/export_tree.py)."
+    }
   }
 ]

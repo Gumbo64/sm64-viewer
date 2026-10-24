@@ -6,9 +6,9 @@ const PREFS_KEY = 'sm64-viewer:timeline';
 
 function loadPrefs() {
   try {
-    return { newestFirst: false, importantOnly: false, ...JSON.parse(localStorage.getItem(PREFS_KEY) ?? '{}') };
+    return { newestFirst: true, importantOnly: false, ...JSON.parse(localStorage.getItem(PREFS_KEY) ?? '{}') };
   } catch {
-    return { newestFirst: false, importantOnly: false };
+    return { newestFirst: true, importantOnly: false };
   }
 }
 
@@ -54,7 +54,9 @@ function formatDay(day) {
  * - `file` (+ `start`): a replay in public/replays, opened when the card is clicked
  * - `description`: a line of text
  * - `table`: { columns: [...], rows: [...], highlight?: rowIndex[], note? }; a row is
- *   either an array of cells or { cells: [...], file, start } to make it open a replay
+ *   either an array of cells or { cells: [...], file, start } to make it open a replay;
+ *   a cell may be { text, file, start?, title? } to make that cell open its own replay,
+ *   or { text, href, title? } to link somewhere (a `?…` href is relative to the app, e.g. a tree view)
  * - `links`: [{ label, url }] (and `video`, shown as "Watch the video")
  * - `image`: a path in public/ or a URL, with optional `alt`
  * - `regions`: [{ from, to?, label, note?, color? }] annotating frame ranges of the
@@ -151,11 +153,37 @@ function ResultTable({ table, onUrl, title }) {
                   )}
                 </td>
               )}
-              {r.cells.map((v, j) => (
-                <td key={j} className={typeof v === 'number' ? 'num' : j === 0 ? 'label' : undefined}>
-                  {typeof v === 'number' ? v.toLocaleString('en-US') : v}
-                </td>
-              ))}
+              {r.cells.map((v, j) =>
+                v && typeof v === 'object' && v.href ? (
+                  <td key={j}>
+                    <a
+                      className="play-btn cell-btn"
+                      href={v.href.startsWith('?') ? `${BASE}${v.href}` : v.href}
+                      title={v.title ?? v.text}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {v.text}
+                    </a>
+                  </td>
+                ) : v && typeof v === 'object' ? (
+                  <td key={j} className="num">
+                    <button
+                      className="play-btn cell-btn"
+                      title={v.title ?? `Play ${v.file}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onUrl(`${BASE}replays/${v.file}`, v.start ?? 0, `${title}: ${r.cells[0]}, ${table.columns[j]}`);
+                      }}
+                    >
+                      {typeof v.text === 'number' ? v.text.toLocaleString('en-US') : v.text}
+                    </button>
+                  </td>
+                ) : (
+                  <td key={j} className={typeof v === 'number' ? 'num' : j === 0 ? 'label' : v === '—' ? 'empty' : undefined}>
+                    {typeof v === 'number' ? v.toLocaleString('en-US') : v}
+                  </td>
+                ),
+              )}
             </tr>
           ))}
         </tbody>
@@ -166,7 +194,7 @@ function ResultTable({ table, onUrl, title }) {
 }
 
 /** Start screen: open a file, pick a bundled example, or load from a URL. */
-export default function ReplayPicker({ onFile, onUrl, error }) {
+export default function ReplayPicker({ onFile, onUrl, onTree, error }) {
   const [examples, setExamples] = useState([]);
   const [url, setUrl] = useState('');
   const [prefs, setPrefs] = useState(loadPrefs);
@@ -193,7 +221,14 @@ export default function ReplayPicker({ onFile, onUrl, error }) {
   return (
     <div className="center-screen">
       <div className="card wide">
-        <h1>Load a replay</h1>
+        <div className="tl-head">
+          <h1>Load a replay</h1>
+          {onTree && (
+            <button className="toggle" onClick={onTree} title="The Objective-RRT search trees, live">
+              Search trees ▸
+            </button>
+          )}
+        </div>
         <DropZone accept=".m64" onFile={onFile} label="Drop an .m64 here or click to choose" />
         <p className="muted small">
           Raw input files (4 bytes per frame, as written by sm64-AI-binds and sm64-twin) and Mupen64 .m64

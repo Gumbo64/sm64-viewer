@@ -15,6 +15,10 @@ export default defineConfig({
     wasm(),
   ],
   resolve: localBinds ? { alias: { 'sm64-binds-frontend': localBinds } } : {},
-  server: localBinds ? { fs: { allow: ['..', localBinds] } } : {},
+  server: {
+    ...(localBinds ? { fs: { allow: ['..', localBinds] } } : {}),
+    // The Objective-RRT tree server (objective-rrt/tools/viz.py) for the tree view.
+    proxy: { '/obrrt': { target: 'http://localhost:8090', rewrite: (p) => p.replace(/^\/obrrt/, '') } },
+  },
   base: '/sm64-viewer',
 })

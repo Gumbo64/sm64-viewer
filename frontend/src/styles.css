@@ -825,3 +825,16 @@ button.toggle:focus-visible {
 .freeze[hidden] {
   display: none;
 }
+.tl-table th {
+  white-space: normal;
+  vertical-align: bottom;
+}
+.tl-table .cell-btn {
+  font-variant-numeric: tabular-nums;
+  min-width: 3.8rem;
+  text-align: right;
+}
+.tl-table td.empty {
+  color: var(--muted);
+  text-align: center;
+}

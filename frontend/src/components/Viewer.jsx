@@ -17,7 +17,7 @@ const speedLabel = (s) => (s === Infinity ? 'max' : `${s}×`);
  * Plays one replay. `initial` = { frame, speed, playing } to restore after a
  * rewind; `onRewind(frame, speed, playing)` is called to go backwards.
  */
-export default function Viewer({ replay, initial, onRewind, onClose }) {
+export default function Viewer({ replay, initial, onRewind, onClose, backLabel = '← Replays' }) {
   const container = useRef(null);
   const stage = useRef(null);
   const player = useRef(null);
@@ -168,8 +168,8 @@ export default function Viewer({ replay, initial, onRewind, onClose }) {
   return (
     <div className="viewer">
       <header className="topbar">
-        <button className="ghost" onClick={onClose} title="Load another replay">
-          ← Replays
+        <button className="ghost" onClick={onClose} title={backLabel === '← Tree' ? 'Back to the search tree' : 'Load another replay'}>
+          {backLabel}
         </button>
         <span className="title" title={replay.name}>
           {replay.name}
