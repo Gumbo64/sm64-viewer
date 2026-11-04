@@ -8,6 +8,9 @@
 //
 // `to` defaults to the next region's `from` (or the end of the replay);
 // `note` and `color` are optional.
+//
+// A replay index.json doesn't list gets them from a `regions.json` next to it
+// (the same list, as objective-rrt-v2's `legs` writes beside route.m64).
 
 const BASE = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 const COLORS = ['#60a5fa', '#f59e0b', '#a78bfa', '#34d399', '#f472b6', '#22d3ee'];
@@ -28,12 +31,29 @@ export function normalizeRegions(list, total) {
   }));
 }
 
-/** The regions index.json gives the replay at `source` (a URL), or []. */
+/** The regions index.json gives the replay at `source` (a URL), else those of a regions.json beside it, or []. */
 export async function regionsFor(source, total) {
   if (!source) return [];
+  return (await indexRegions(source, total)) ?? (await siblingRegions(source, total));
+}
+
+async function siblingRegions(source, total) {
+  try {
+    const url = new URL('regions.json', new URL(source, window.location.href));
+    if (url.protocol !== 'http:' && url.protocol !== 'https:') return [];
+    const r = await fetch(url);
+    if (!r.ok || !/json/.test(r.headers.get('content-type') ?? '')) return [];
+    const list = await r.json();
+    return Array.isArray(list) ? normalizeRegions(list, total) : [];
+  } catch {
+    return [];
+  }
+}
+
+async function indexRegions(source, total) {
   try {
     const r = await fetch(`${BASE}replays/index.json`);
-    if (!r.ok) return [];
+    if (!r.ok) return null;
     const target = pathOf(source);
     for (const ex of await r.json()) {
       const rows = (ex.table?.rows ?? []).filter((row) => !Array.isArray(row));
@@ -46,7 +66,7 @@ export async function regionsFor(source, total) {
   } catch {
     // No annotations, then.
   }
-  return [];
+  return null;
 }
 
 /** The region `frame` is in, or null. */

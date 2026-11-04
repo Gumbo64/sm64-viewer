@@ -45,6 +45,8 @@
 .tree-app .legend .row { display: flex; align-items: center; gap: 7px; padding: 2px 4px; cursor: pointer; border-radius: 4px; }
 .tree-app .legend .row:hover { background: var(--panel2); }
 .tree-app .legend .row.off { opacity: .35; }
+.tree-app .legend .legend-all { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 4px; }
+.tree-app .legend .legend-all button { flex: 1; }
 .tree-app .legend .sw { width: 10px; height: 10px; border-radius: 50%; flex: none; }
 .tree-app .legend .row .n { margin-left: auto; color: var(--muted); font-variant-numeric: tabular-nums; }
 .tree-app table { border-collapse: collapse; width: 100%; font-size: 12px; font-variant-numeric: tabular-nums; }

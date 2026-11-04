@@ -838,3 +838,7 @@ button.toggle:focus-visible {
   color: var(--muted);
   text-align: center;
 }
+.tl-links {
+  display: flex;
+  gap: 0.5rem;
+}

@@ -1,0 +1,46 @@
+/* The landmark-route page: the tree / scattershot layout (oss.css's .oss-app)
+   with the map in the middle and the legs on the right. */
+.oss-app.routes-app { grid-template-columns: 1fr 560px; }
+.oss-app.routes-list-app { grid-template-columns: 1fr; }
+.oss-app .routes-list { overflow: auto; padding: 12px 14px; }
+.oss-app .routes-table { width: auto; }
+.oss-app .routes-table td, .oss-app .routes-table th { padding: 4px 10px; white-space: nowrap; }
+.oss-app tr.clickable { cursor: pointer; }
+.oss-app tr.clickable:hover td { background: var(--panel2); }
+.oss-app .routes-play { margin-left: auto; border-color: var(--accent); color: var(--accent); }
+.oss-app .routes-main { position: relative; overflow: hidden; }
+.oss-app .routes-main .view { bottom: 44px; }
+.oss-app .routes-main .scale { bottom: 54px; }
+.oss-app .routes-main .overlay button { background: rgba(27,31,42,.85); }
+.oss-app .routes-map-tools { position: absolute; right: 10px; top: 10px; display: flex; gap: 6px; }
+.oss-app .routes-bar { position: absolute; left: 0; right: 0; bottom: 0; height: 44px; display: flex; align-items: center; gap: 10px;
+    padding: 0 10px; border-top: 1px solid var(--border); background: var(--panel); }
+.oss-app .routes-bar input[type="range"] { flex: 1; min-width: 120px; accent-color: var(--accent); }
+.oss-app .routes-frame { font-variant-numeric: tabular-nums; min-width: 92px; }
+.oss-app .routes-where { font-size: 12px; max-width: 45%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.oss-app .routes-side { overflow-y: auto; }
+.oss-app .routes-legs td { vertical-align: top; padding: 3px 4px; }
+.oss-app .routes-legs tr.sel td { background: var(--panel2); }
+.oss-app .routes-legs tr.sel td:first-child { box-shadow: inset 2px 0 0 var(--accent); }
+.oss-app .routes-legs tr.cur td:nth-child(2) b { color: var(--accent); }
+.oss-app .routes-legs tr.failed td { opacity: .7; }
+.oss-app .routes-legs tfoot td { border-bottom: 0; border-top: 1px solid var(--border); }
+.oss-app .routes-legs .small, .oss-app .routes-side .small { font-size: 11px; }
+.oss-app .routes-sw { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 5px; }
+.oss-app .routes-num { display: inline-block; min-width: 18px; height: 18px; line-height: 18px; border-radius: 9px; text-align: center;
+    color: #0e1015; font-weight: 700; font-size: 11px; }
+.oss-app .routes-dash { display: inline-block; width: 16px; height: 0; border-top: 2px dashed; vertical-align: middle; }
+.oss-app button.routes-mini { padding: 0 6px; font-size: 11px; }
+@media (max-width: 900px) {
+.oss-app.routes-app { grid-template-columns: 1fr; grid-template-rows: auto 60vh auto; }
+.oss-app .routes-main { height: 60vh; }
+}
+
+/* live runs */
+.oss-app .routes-running { color: var(--accent); }
+.oss-app .routes-spin { display: inline-block; width: 9px; height: 9px; border: 2px solid var(--accent); border-right-color: transparent;
+    border-radius: 50%; vertical-align: -1px; animation: routes-spin .8s linear infinite; }
+@keyframes routes-spin { to { transform: rotate(360deg); } }
+.oss-app .routes-legs tr.running td:nth-child(2) b { color: var(--accent); }
+.oss-app .routes-legs tr.pending td { opacity: .6; }
+.oss-app .routes-table .live { font-size: 12px; }

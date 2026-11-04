@@ -8,7 +8,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import './tree.css';
 
-const TEMPLATE = "<header>\n    <button id=\"back\" title=\"Back to the replay list\">\u2190 Replays</button>\n    <h1>Objective-RRT tree</h1>\n    <select id=\"run\" aria-label=\"Run\"></select>\n    <span class=\"live\"><span class=\"dot\" id=\"dot\"></span><span id=\"updated\">\u2014</span></span>\n    <span class=\"stat\">states <b id=\"s-nodes\">\u2014</b></span>\n    <span class=\"stat\">frontier <b id=\"s-front\">\u2014</b></span>\n    <span class=\"stat\">search <b id=\"s-time\">\u2014</b></span>\n    <span class=\"stat\">emulated <b id=\"s-fps\">\u2014</b></span>\n  </header>\n\n  <aside>\n    <h2>World map</h2>\n    <svg id=\"map\" aria-label=\"Zones and the transitions between them\"></svg>\n    <h2>Levels and areas</h2>\n    <div id=\"zones\"></div>\n    <h2>Transitions from this area</h2>\n    <div id=\"trans\"></div>\n  </aside>\n\n  <main>\n    <div id=\"view\"></div>\n    <div class=\"overlay\">\n      <span class=\"title\" id=\"zone-title\">\u2014</span>\n      <span class=\"muted\">colour</span>\n      <button data-mode=\"via\" aria-pressed=\"true\">Objective</button>\n      <button data-mode=\"frame\">Game time</button>\n      <button data-mode=\"start\">Times started from</button>\n      <button data-mode=\"rate\">Success rate</button>\n      <button data-mode=\"progress\">Stars &amp; keys</button>\n      <button id=\"edges\" aria-pressed=\"true\">Edges</button>\n      <button id=\"geom\" title=\"Level collision geometry from the decomp\">Geometry: solid</button>\n      <button id=\"fit\">Fit</button>\n    </div>\n    <div id=\"tip\"></div>\n    <div class=\"scale\" id=\"scale\"></div>\n  </main>\n\n  <aside class=\"right\">\n    <h2>State</h2>\n    <div id=\"node\" class=\"empty\">Click a state.</div>\n    <h2 id=\"legend-title\">Objectives that made the states here</h2>\n    <div class=\"legend\" id=\"legend\"></div>\n    <h2>Objective types (whole run)</h2>\n    <div id=\"kinds\"></div>\n  </aside>";
+const TEMPLATE = "<header>\n    <button id=\"back\" title=\"Back to the replay list\">\u2190 Replays</button>\n    <h1>Objective-RRT tree</h1>\n    <select id=\"run\" aria-label=\"Run\"></select>\n    <span class=\"live\"><span class=\"dot\" id=\"dot\"></span><span id=\"updated\">\u2014</span></span>\n    <span class=\"stat\">states <b id=\"s-nodes\">\u2014</b></span>\n    <span class=\"stat\">frontier <b id=\"s-front\">\u2014</b></span>\n    <span class=\"stat\">search <b id=\"s-time\">\u2014</b></span>\n    <span class=\"stat\">emulated <b id=\"s-fps\">\u2014</b></span>\n    <span class=\"stat\" id=\"race-wrap\" hidden>vs reference <b id=\"s-race\">\u2014</b>\n      <button id=\"play-best\" title=\"Play the current best route in the viewer\">\u25b6 play best</button></span>\n  </header>\n\n  <aside>\n    <h2>World map</h2>\n    <svg id=\"map\" aria-label=\"Zones and the transitions between them\"></svg>\n    <h2>Levels and areas</h2>\n    <div id=\"zones\"></div>\n    <h2>Transitions from this area</h2>\n    <div id=\"trans\"></div>\n  </aside>\n\n  <main>\n    <div id=\"view\"></div>\n    <div class=\"overlay\">\n      <span class=\"title\" id=\"zone-title\">\u2014</span>\n      <span class=\"muted\">colour</span>\n      <button data-mode=\"via\" aria-pressed=\"true\">Objective</button>\n      <button data-mode=\"frame\">Game time</button>\n      <button data-mode=\"zone\" title=\"Game time since Mario entered this zone (level, area)\">Since zone entry</button>\n      <button data-mode=\"start\">Times started from</button>\n      <button data-mode=\"rate\">Success rate</button>\n      <button data-mode=\"progress\">Stars &amp; keys</button>\n      <button id=\"edges\" aria-pressed=\"true\">Edges</button>\n      <button id=\"geom\" title=\"Level collision geometry from the decomp\">Geometry: solid</button>\n      <button id=\"fit\">Fit</button>\n    </div>\n    <div id=\"tip\"></div>\n    <div class=\"scale\" id=\"scale\"></div>\n  </main>\n\n  <aside class=\"right\">\n    <h2>State</h2>\n    <div id=\"node\" class=\"empty\">Click a state.</div>\n    <h2 id=\"legend-title\">Objectives that made the states here</h2>\n    <div class=\"legend\" id=\"legend\"></div>\n    <h2>Objective types (whole run)</h2>\n    <div id=\"kinds\"></div>\n  </aside>";
 
 export function mountTree(root, opts) {
 root.classList.add('tree-app');
@@ -56,6 +56,37 @@ function scaleColor(name, t) {
 const progressLabel = (n) => `${n.stars}★ ${n.keys}🔑`;
 
 let levelNames = {};
+// Time since zone entry: a state's frame minus the frame of the first state
+// of its unbroken chain of ancestors in the same zone (the child side of the
+// edge where the zone changed, or the root). Memoised per id and found
+// iteratively, so a whole tree costs one walk over each state.
+function zoneEntries(byId) {
+  const memo = new Float64Array(byId.length).fill(-1);
+  const stack = [];
+  const same = (a, b) => a.level === b.level && a.area === b.area;
+  return function entry(n) {
+    if (memo[n.id] >= 0) return memo[n.id];
+    let m = n, e;
+    for (;;) {
+      const p = byId[m.parent];
+      if (!p || !same(p, m)) { e = m.frame; break; }
+      if (memo[p.id] >= 0) { e = memo[p.id]; break; }
+      stack.push(m);
+      m = p;
+    }
+    memo[m.id] = e;
+    while (stack.length) memo[stack.pop().id] = e;
+    return e;
+  };
+}
+let zoneEntry = () => 0;
+// Legend presets: "only these objectives". A state matches by the objective
+// that made it, with or without a suffix (`~d` for an attempt's dense states).
+const PRESETS = {
+  BLJ: ['Tech::Blj', 'Tech::BljAny', 'Tech::BljRun', 'Tech::Lblj', 'Tech::MoatWarpBlj',
+        'Tech::HyperWalk', 'Tech::HyperClimb', 'Jrb::PillarHyper'],
+};
+const baseKind = (k) => k.split('~')[0];
 let run = null, nodes = [], byId = [], zones = new Map(), kindsSeen = [], lastSize = -1, lastIds = 0;
 let zoneKey = null, mode = 'via', showEdges = true, hidden = new Set(), selected = null, newSince = 0;
 const colorOf = new Map();
@@ -166,6 +197,7 @@ async function refresh(force) {
   const prevCount = nodes.length;
   nodes = parseCsv(text);
   byId = []; for (const n of nodes) byId[n.id] = n;
+  zoneEntry = zoneEntries(byId);
   newSince = force ? nodes.length : prevCount;
   zones = new Map();
   for (const n of nodes) {
@@ -193,9 +225,33 @@ async function loadSummary() {
     $('s-front').textContent = `${s.frontier.keys} keys · ${s.frontier.stars} stars`;
     $('s-time').textContent = `${Math.floor(s.secs / 60)}m ${Math.round(s.secs % 60)}s`;
     $('s-fps').textContent = `${Math.round(s.frames / Math.max(1, s.secs)).toLocaleString()} frames/s`;
+    renderRace(s);
     renderKinds(s);
   } catch { /* summary not written yet */ }
 }
+
+// ---------- races and followers (backbone/race.py, follow.py) ----------
+// Their summary.json carries `best` (node id of the current best state),
+// `ref_frame` / `best_frame` (the reference's and our frame at the last
+// milestone done) and `race.milestones` (per milestone: ref_frame, frame,
+// saved). Shown in the header; the best route is drawn in gold.
+let bestId = null;
+function renderRace(s) {
+  const wrap = $('race-wrap');
+  if (!s.race) { wrap.hidden = true; bestId = null; return; }
+  wrap.hidden = false;
+  bestId = s.best ?? null;
+  const ms = s.race.milestones || [];
+  const saved = (s.ref_frame ?? 0) - (s.best_frame ?? 0);
+  const cur = s.race.current || {};
+  const sign = (v) => (v > 0 ? `−${v}` : v < 0 ? `+${-v}` : '±0');
+  let t = `${esc(s.race.ref)}: ${ms.length} milestones · ${clock(s.best_frame ?? 0)} vs ${clock(s.ref_frame ?? 0)} (${sign(saved)} f)`;
+  if (cur.milestone && cur.ref_frames) t += ` · now #${cur.milestone}: best ${cur.best_frames ?? '—'} / ${cur.ref_frames} f`;
+  if (s.follow) t = `${esc(s.follow.ref)}: ${s.follow.milestones} milestones · frame ${s.follow.frame} · ${esc(s.follow.state || '')}`;
+  $('s-race').innerHTML = t;
+  $('s-race').title = ms.map((m) => `#${m.k} ${m.kind} (level ${m.level}): ${m.segment} vs ${m.segment_ref} f (${sign(m.saved)})${m.fallback ? ' · reference' : ''}`).join('\n');
+}
+$('play-best').addEventListener('click', () => { if (bestId != null) playNode(bestId); });
 
 // ---------- side panels ----------
 function renderZones() {
@@ -257,7 +313,7 @@ let scaleRange = null;
 function renderLegend() {
   const z = zones.get(zoneKey);
   const title = { via: 'Objectives that made the states here', progress: 'Stars and keys of the states here',
-    frame: 'Game time', start: 'Times used as an attempt start', rate: 'Success rate of attempts started here' }[mode];
+    frame: 'Game time', zone: 'Time since zone entry', start: 'Times used as an attempt start', rate: 'Success rate of attempts started here' }[mode];
   $('legend-title').textContent = title;
   if (categorical()) {
     const counts = new Map();
@@ -265,12 +321,12 @@ function renderLegend() {
     const order = mode === 'progress'
       ? [...counts].sort((a, b) => a[0].localeCompare(b[0], undefined, { numeric: true }))
       : [...counts].sort((a, b) => b[1] - a[1]);
-    $('legend').innerHTML = order.map(([k, n]) =>
+    $('legend').innerHTML = (order.length ? `<div class="legend-all"><button data-legend="all">Show all</button><button data-legend="none">Hide all</button>${mode === 'via' ? Object.keys(PRESETS).map((p) => `<button data-legend="preset" data-preset="${esc(p)}" title="Show only ${esc(PRESETS[p].join(', '))}">${esc(p)} only</button>`).join('') : ''}</div>` : '') + order.map(([k, n]) =>
       `<div class="row${hidden.has(k) ? ' off' : ''}" data-kind="${esc(k)}"><span class="sw" style="background:${kindColor(k)}"></span>${esc(k)}<span class="n">${n.toLocaleString()}</span></div>`).join('')
       || '<div class="empty">No states.</div>';
     return;
   }
-  const name = { frame: 'viridis', start: 'magma', rate: 'rdylgn' }[mode];
+  const name = { frame: 'viridis', zone: 'viridis', start: 'magma', rate: 'rdylgn' }[mode];
   const grad = SCALES[name].join(', ');
   const [lo, hi] = scaleRange ?? ['', ''];
   const note = { frame: 'early → late', start: 'log scale; grey = never started from', rate: 'grey = never started from' }[mode];
@@ -301,6 +357,7 @@ async function showNode(id, focus = true) {
       <span>State</span><span><b>#${id}</b> · depth ${n.depth}</span>
       <span>Zone</span><span>${esc(zoneName(zk(n)))}</span>
       <span>Game time</span><span>${clock(n.frame)} (frame ${n.frame.toLocaleString()})</span>
+      <span>Since zone entry</span><span>${clock(n.frame - zoneEntry(n))} (entered at ${clock(zoneEntry(n))})</span>
       <span>Progress</span><span>${n.stars}★ · ${n.keys} keys · ${n.coins} coins</span>
       <span>Position</span><span>${n.x}, ${n.y}, ${n.z}</span>
       <span>Parent</span><span>${n.parent >= 0 ? `<span class="jump" data-node="${n.parent}">#${n.parent}</span>` : 'boot'}</span>
@@ -482,6 +539,7 @@ function nodeColor(n, stats) {
   const c = new THREE.Color();
   if (categorical()) return c.set(kindColor(category(n)));
   if (mode === 'frame') return scaleColor('viridis', (n.frame - stats.f0) / Math.max(1, stats.f1 - stats.f0));
+  if (mode === 'zone') return scaleColor('viridis', (n.frame - zoneEntry(n)) / Math.max(1, stats.z1));
   if (mode === 'start') return n.as_start ? scaleColor('magma', 0.15 + 0.85 * Math.log(1 + n.as_start) / Math.log(1 + stats.s1)) : c.set('#3a4152');
   if (mode === 'rate') return n.as_start ? scaleColor('rdylgn', n.successes / n.as_start) : c.set('#3a4152');
   return c;
@@ -493,8 +551,8 @@ function buildScene(fit) {
   $('zone-title').textContent = z ? `${zoneName(zoneKey)} · ${z.nodes.length.toLocaleString()} states` : '—';
   if (!z) return;
   shown = z.nodes.filter((n) => !(categorical() && hidden.has(category(n))));
-  const stats = { f0: Infinity, f1: 0, s1: 1, st1: 0 };
-  for (const n of shown) { stats.f0 = Math.min(stats.f0, n.frame); stats.f1 = Math.max(stats.f1, n.frame); stats.s1 = Math.max(stats.s1, n.as_start); stats.st1 = Math.max(stats.st1, n.stars); }
+  const stats = { f0: Infinity, f1: 0, s1: 1, st1: 0, z1: 0 };
+  for (const n of shown) { stats.f0 = Math.min(stats.f0, n.frame); stats.f1 = Math.max(stats.f1, n.frame); stats.s1 = Math.max(stats.s1, n.as_start); stats.st1 = Math.max(stats.st1, n.stars); if (mode === 'zone') stats.z1 = Math.max(stats.z1, n.frame - zoneEntry(n)); }
   const pos = new Float32Array(shown.length * 3), col = new Float32Array(shown.length * 3);
   const fpos = [];
   shown.forEach((n, i) => {
@@ -535,9 +593,9 @@ function buildScene(fit) {
   if (fit) fitView();
   drawSelection();
   loadGeometry();
-  scaleRange = { frame: [clock(stats.f0), clock(stats.f1)], start: ['1', String(stats.s1)], rate: ['0%', '100%'] }[mode] ?? null;
+  scaleRange = { frame: [clock(stats.f0), clock(stats.f1)], zone: [clock(0), clock(stats.z1)], start: ['1', String(stats.s1)], rate: ['0%', '100%'] }[mode] ?? null;
   renderLegend();
-  const scale = { via: 'Colour: the objective that made each state (same colour in every run).', frame: 'Colour: game time (viridis, early to late).',
+  const scale = { via: 'Colour: the objective that made each state (same colour in every run).', frame: 'Colour: game time (viridis, early to late).', zone: 'Colour: game time since Mario entered this zone (viridis, just entered to latest).',
     start: 'Colour: times used as an attempt start (magma, log), grey = never.', rate: 'Colour: success rate of attempts from it (red 0% to green 100%).',
     progress: 'Colour: stars and keys (same colour in every run).' }[mode];
   $('scale').textContent = `${scale}  White = new since the last update.`;
@@ -562,7 +620,23 @@ function fitView() {
   raycaster.params.Points.threshold = r / 150;
 }
 
+let bestLine = null;
+function drawBest() {
+  if (bestLine) { world.remove(bestLine); bestLine.geometry.dispose(); bestLine = null; }
+  const n = bestId != null ? byId[bestId] : null;
+  if (!n) return;
+  // The best route's part in this zone: walk back from the best node, and
+  // from the deepest ancestor still in the zone when the best is elsewhere.
+  const pts = [];
+  for (let m = n; m; m = byId[m.parent]) if (zk(m) === zoneKey) pts.push(new THREE.Vector3(m.x, m.y, m.z));
+  if (pts.length > 1) {
+    bestLine = new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color: 0xf7c948 }));
+    world.add(bestLine);
+  }
+}
+
 function drawSelection() {
+  drawBest();
   for (const o of [selMesh, pathLine]) if (o) { world.remove(o); o.geometry.dispose(); }
   selMesh = pathLine = null;
   const n = byId[selected];
@@ -641,6 +715,17 @@ root.addEventListener('click', (e) => {
   if (z) { zoneKey = z.dataset.zone; renderZones(); renderMap(); renderTrans(); renderLegend(); buildScene(true); return; }
   const n = e.target.closest('[data-node]');
   if (n) { showNode(+n.dataset.node); return; }
+  const la = e.target.closest('[data-legend]');
+  if (la) {
+    if (la.dataset.legend === 'all') hidden.clear();
+    else if (la.dataset.legend === 'preset') {
+      const keep = new Set(PRESETS[la.dataset.preset] ?? []);
+      hidden.clear();
+      for (const n of zones.get(zoneKey)?.nodes ?? []) { const k = category(n); if (!keep.has(baseKind(k))) hidden.add(k); }
+    }
+    else for (const n of zones.get(zoneKey)?.nodes ?? []) hidden.add(category(n));
+    renderLegend(); buildScene(false); return;
+  }
   const k = e.target.closest('[data-kind]');
   if (k) { hidden.has(k.dataset.kind) ? hidden.delete(k.dataset.kind) : hidden.add(k.dataset.kind); renderLegend(); buildScene(false); }
 });

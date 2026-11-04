@@ -194,7 +194,7 @@ function ResultTable({ table, onUrl, title }) {
 }
 
 /** Start screen: open a file, pick a bundled example, or load from a URL. */
-export default function ReplayPicker({ onFile, onUrl, onTree, error }) {
+export default function ReplayPicker({ onFile, onUrl, onTree, onOss, onRoutes, error }) {
   const [examples, setExamples] = useState([]);
   const [url, setUrl] = useState('');
   const [prefs, setPrefs] = useState(loadPrefs);
@@ -223,11 +223,23 @@ export default function ReplayPicker({ onFile, onUrl, onTree, error }) {
       <div className="card wide">
         <div className="tl-head">
           <h1>Load a replay</h1>
+          <div className="tl-links">
           {onTree && (
             <button className="toggle" onClick={onTree} title="The Objective-RRT search trees, live">
               Search trees ▸
             </button>
           )}
+          {onOss && (
+            <button className="toggle" onClick={onOss} title="The objective-scattershot cells, live">
+              Scattershots ▸
+            </button>
+          )}
+          {onRoutes && (
+            <button className="toggle" onClick={onRoutes} title="objective-rrt-v2's landmark-route (legs) runs">
+              Routes ▸
+            </button>
+          )}
+          </div>
         </div>
         <DropZone accept=".m64" onFile={onFile} label="Drop an .m64 here or click to choose" />
         <p className="muted small">

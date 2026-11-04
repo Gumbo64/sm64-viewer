@@ -1,0 +1,156 @@
+/*
+ * The scattershot view, laid out and styled as the tree view.
+ *
+ * Part 1 is a copy of src/tree/tree.css with `.tree-app` replaced by
+ * `.oss-app` and the tree's element ids by classes (#map -> .map, #view ->
+ * .view, #tip -> .tip). Keep it in step with tree.css; don't restyle it here.
+ * Part 2 is only for what the tree view doesn't have (query bar, tabs, the
+ * objective tree, the table, the surface legend).
+ *
+ * oss-nav, oss-status, oss-map-view and oss-kv have no rules: they sit next
+ * to the tree's classes (aside, live, view, kv) as hooks for tests/oss_smoke.mjs.
+ */
+
+/* ---------- 1. copy of tree.css ---------- */
+.oss-app {
+  position: fixed; inset: 0; z-index: 1;
+    --bg: #0e1015; --panel: #151821; --panel2: #1b1f2a; --border: #262b38; --text: #e3e6ee;
+    --muted: #8b93a7; --accent: #f7c948; --ok: #5cc98b; --bad: #e0675f; --link: #7fb2ff;
+  }
+.oss-app * { box-sizing: border-box; }
+.oss-app { margin: 0; height: 100%; background: var(--bg); color: var(--text);
+    font: 13px/1.4 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
+.oss-app { display: grid; grid-template-rows: auto 1fr; grid-template-columns: 290px 1fr 340px; height: 100vh; }
+.oss-app header { grid-column: 1 / -1; display: flex; gap: 16px; align-items: center; padding: 8px 14px;
+    border-bottom: 1px solid var(--border); background: var(--panel); flex-wrap: wrap; }
+.oss-app header h1 { font-size: 14px; margin: 0; font-weight: 600; }
+.oss-app select, .oss-app button { background: var(--panel2); color: var(--text); border: 1px solid var(--border);
+    border-radius: 5px; padding: 3px 8px; font: inherit; cursor: pointer; }
+.oss-app button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+.oss-app .stat { color: var(--muted); }
+.oss-app .stat b { color: var(--text); font-weight: 600; font-variant-numeric: tabular-nums; }
+.oss-app .live { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); }
+.oss-app .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
+.oss-app .dot.on { background: var(--ok); box-shadow: 0 0 6px var(--ok); animation: oss-pulse 1.6s infinite; }
+@keyframes oss-pulse { 50% { opacity: .4; } }
+.oss-app aside { overflow-y: auto; border-right: 1px solid var(--border); background: var(--panel); padding: 10px; }
+.oss-app aside.right { border-right: 0; border-left: 1px solid var(--border); }
+.oss-app h2 { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 14px 0 6px; font-weight: 600; }
+.oss-app h2:first-child { margin-top: 0; }
+.oss-app .zone { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; padding: 5px 7px; border-radius: 5px; cursor: pointer; }
+.oss-app .zone:hover { background: var(--panel2); }
+.oss-app .zone.sel { background: var(--panel2); outline: 1px solid var(--accent); }
+.oss-app .zone .n { color: var(--muted); font-variant-numeric: tabular-nums; text-align: right; }
+.oss-app .zone .bar { grid-column: 1 / -1; height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
+.oss-app .zone .bar i { display: block; height: 100%; background: var(--accent); }
+.oss-app .lvl { color: var(--muted); font-size: 11px; margin: 8px 0 2px 7px; }
+.oss-app .area { color: var(--muted); }
+.oss-app .map { width: 100%; height: 190px; display: block; background: var(--panel2); border-radius: 6px; }
+/* The tree's labels ignore the pointer; here the label text selects its area too. */
+.oss-app .map text { fill: var(--text); font-size: 9px; cursor: pointer; }
+.oss-app .map .z { cursor: pointer; }
+.oss-app main { position: relative; overflow: hidden; }
+.oss-app .view { position: absolute; inset: 0; }
+.oss-app .overlay { position: absolute; left: 10px; top: 10px; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.oss-app .overlay .title { font-weight: 600; margin-right: 8px; background: rgba(14,16,21,.7); padding: 3px 8px; border-radius: 5px; }
+.oss-app .overlay .oss-stream { background: rgba(14,16,21,.7); padding: 3px 8px; border-radius: 5px; color: var(--muted); }
+.oss-app .tip { position: absolute; pointer-events: none; background: rgba(21,24,33,.95); border: 1px solid var(--border);
+    padding: 4px 8px; border-radius: 5px; font-size: 12px; display: none; white-space: nowrap; }
+.oss-app .scale { position: absolute; left: 10px; bottom: 10px; color: var(--muted); font-size: 11px; background: rgba(14,16,21,.7); padding: 3px 8px; border-radius: 5px; }
+.oss-app .legend .row { display: flex; align-items: center; gap: 7px; padding: 2px 4px; cursor: pointer; border-radius: 4px; }
+.oss-app .legend .row:hover { background: var(--panel2); }
+.oss-app .legend .row.off { opacity: .35; }
+.oss-app .legend .sw { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+.oss-app .legend .row .n { margin-left: auto; color: var(--muted); font-variant-numeric: tabular-nums; }
+.oss-app table { border-collapse: collapse; width: 100%; font-size: 12px; font-variant-numeric: tabular-nums; }
+.oss-app th, .oss-app td { padding: 2px 4px; border-bottom: 1px solid var(--border); text-align: left; }
+.oss-app th { color: var(--muted); font-weight: 500; font-size: 11px; }
+.oss-app td.r, .oss-app th.r { text-align: right; }
+.oss-app .kv { display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; }
+.oss-app .kv span:nth-child(odd) { color: var(--muted); }
+.oss-app .key { font-family: ui-monospace, monospace; font-size: 11px; word-break: break-all; color: var(--text); }
+.oss-app .ok { color: var(--ok); }
+.oss-app .bad { color: var(--bad); }
+.oss-app .muted { color: var(--muted); }
+.oss-app a { color: var(--link); text-decoration: none; }
+.oss-app a:hover { text-decoration: underline; }
+.oss-app .jump { color: var(--link); cursor: pointer; }
+.oss-app .empty { color: var(--muted); padding: 8px 0; }
+.oss-app .btns { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+@media (max-width: 900px) {
+.oss-app { grid-template-columns: 1fr; grid-template-rows: auto 260px 55vh auto; height: auto; }
+.oss-app aside { border: 0; }
+.oss-app main { height: 55vh; }
+}
+
+/* ---------- 2. scattershot only ---------- */
+
+/* header: the view switch and the sampling menu sit at the right end */
+.oss-app .oss-tabs { display: inline-flex; gap: 6px; margin-left: auto; }
+.oss-app .stat select { margin-left: 4px; }
+
+/* the query bar: a full-width second row of the header */
+.oss-app .oss-query { flex: 1 1 100%; }
+.oss-app .oss-query-row { display: flex; align-items: center; gap: 8px; }
+.oss-app .oss-fx { color: var(--muted); }
+.oss-app .oss-query-box { position: relative; flex: 1; }
+.oss-app .oss-query-box input { width: 100%; padding: 3px 8px; background: var(--panel2); color: var(--text);
+    border: 1px solid var(--border); border-radius: 5px; font-size: 12px; }
+.oss-app .oss-query-box input:focus { outline: none; border-color: var(--accent); }
+.oss-app .oss-caret { padding: 0 9px; white-space: pre; color: var(--bad); line-height: 1; font-size: 12px; }
+.oss-app .oss-caret span { visibility: hidden; }
+.oss-app .oss-complete { position: absolute; z-index: 5; top: 100%; left: 0; margin: 2px 0 0; padding: 4px 0; list-style: none;
+    background: var(--panel2); border: 1px solid var(--border); border-radius: 5px; min-width: 240px; font-size: 12px; }
+.oss-app .oss-complete li { padding: 3px 10px; cursor: pointer; }
+.oss-app .oss-complete li.sel, .oss-app .oss-complete li:hover { background: var(--border); }
+.oss-app .oss-matched { white-space: nowrap; }
+.oss-app .oss-error { margin: 4px 0 0 26px; }
+
+/* the 3D view: the message when no cell has a level and a position */
+.oss-app .oss-map-empty { position: absolute; left: 10px; top: 48px; padding: 3px 8px; background: rgba(14,16,21,.7); border-radius: 5px; }
+.oss-app .oss-wait { position: absolute; left: 20px; top: 20px; display: flex; align-items: center; gap: 10px; }
+.oss-app .view canvas { display: block; }
+
+/* the right panel: the cell's fields, the level-surface legend */
+.oss-app .oss-fields { margin-top: 2px; }
+.oss-app .legend.oss-surfaces { display: grid; grid-template-columns: 1fr 1fr; gap: 0 8px; }
+.oss-app .legend.oss-surfaces .row { cursor: default; }
+.oss-app .legend.oss-surfaces .row:hover { background: none; }
+.oss-app .oss-sw { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; }
+
+/* the Table tab: the table fills the 3D view's and the right panel's columns */
+.oss-app main.oss-wide { grid-column: 2 / -1; }
+@media (max-width: 900px) { .oss-app main.oss-wide { grid-column: auto; } }
+.oss-app .oss-scroll { position: absolute; inset: 0; overflow: auto; }
+.oss-app .oss-cells { padding: 0 10px 10px; }
+.oss-app .oss-table { width: auto; }
+.oss-app .oss-table th { position: sticky; top: 0; background: var(--bg); padding: 8px 8px 4px; white-space: nowrap; }
+.oss-app .oss-table td { padding: 2px 8px; white-space: nowrap; }
+.oss-app .oss-table .clickable { cursor: pointer; }
+.oss-app .oss-table td.clickable:hover { color: var(--accent); }
+.oss-app .oss-cells .muted { margin: 8px 0 0; }
+
+/* the Objectives tab: the 2D objective tree in the main column, the chosen objective on the right */
+.oss-app .oss-tree-bar { position: sticky; left: 0; top: 0; z-index: 2; display: flex; align-items: center; gap: 6px; padding: 10px; background: var(--bg); }
+.oss-app .oss-tree-plane { position: relative; }
+.oss-app .oss-tree-plane svg { position: absolute; inset: 0; }
+.oss-app .oss-node { position: absolute; display: flex; align-items: center; gap: 4px; padding: 0 6px 0 2px;
+    background: var(--panel); border: 1px solid var(--border); border-radius: 5px; }
+.oss-app .oss-node.sel { border-color: var(--accent); }
+.oss-app .oss-node.none { opacity: 0.45; }
+.oss-app .oss-node button, .oss-app .oss-tree button.plain { background: none; border: 0; padding: 0; color: inherit; text-align: left; cursor: pointer; }
+.oss-app .oss-node-toggle { width: 18px; color: var(--muted); }
+.oss-app .oss-node button.oss-node-toggle { color: var(--muted); }
+.oss-app .oss-node-name { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; line-height: 1.1; overflow: hidden; }
+.oss-app .oss-node-name b { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; font-weight: 600; }
+.oss-app .oss-node-name .small { font-size: 11px; }
+.oss-app .oss-node-name:hover b { color: var(--accent); }
+.oss-app .oss-count { font-variant-numeric: tabular-nums; color: var(--accent); }
+.oss-app .oss-tree .oss-fname:hover { color: var(--accent); }
+.oss-app .oss-tree .oss-doc { margin: 6px 0 0; }
+.oss-app .oss-field { display: grid; grid-template-columns: 80px 1fr; gap: 6px; margin: 4px 0 0; font-size: 12px; }
+.oss-app .oss-hist { display: flex; flex-direction: column; gap: 1px; }
+.oss-app .oss-tree button.oss-bar { display: grid; grid-template-columns: 90px 1fr 34px; align-items: center; gap: 6px; border-radius: 4px; }
+.oss-app .oss-tree button.oss-bar:hover { background: var(--panel2); }
+.oss-app .oss-bar i { height: 6px; background: var(--accent); border-radius: 2px; opacity: 0.75; }
+.oss-app .oss-bar span:last-child { text-align: right; font-variant-numeric: tabular-nums; }

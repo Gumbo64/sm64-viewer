@@ -9,7 +9,8 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test:tas": "SM64_BINDS_FRONTEND=${SM64_BINDS_FRONTEND:-../../sm64-binds/javascript} xvfb-run -a node --test tests/tas.test.js"
+    "test:tas": "SM64_BINDS_FRONTEND=${SM64_BINDS_FRONTEND:-../../sm64-binds/javascript} xvfb-run -a node --test tests/tas.test.js",
+    "test:oss": "node --test src/oss/*.test.js"
   },
   "dependencies": {
     "mp4-muxer": "^5.2.2",

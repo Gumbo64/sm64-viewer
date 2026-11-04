@@ -1825,5 +1825,407 @@
       ],
       "note": "Trees load from the live tree server when it runs, else from the static exports in public/trees (tools/export_tree.py)."
     }
+  },
+  {
+    "date": "2026-11-04T00:00:00Z",
+    "title": "King route: record, star at 3610",
+    "description": "Best King Bob-omb kill: star at frame 3610 (2:00.3). Elevator BLJ, two tree redirects, wall kick and double jumps to the summit, as the 2026 TAS's chain, then the fight per hit.",
+    "file": "obrrt2/legs-kingloop-0113-r1-x1-blj-tas_ramp0.m64",
+    "start": 1646,
+    "regions": [
+      {
+        "from": 0,
+        "label": "Boot",
+        "note": "The TAS's boot inputs, to the castle grounds.",
+        "color": "#8b93a7"
+      },
+      {
+        "from": 1646,
+        "label": "LakituHill",
+        "note": "220 frames",
+        "color": "#4c8bf5"
+      },
+      {
+        "from": 1866,
+        "label": "CastleDoor",
+        "note": "0 frames",
+        "color": "#2bb673"
+      },
+      {
+        "from": 1866,
+        "label": "BobPainting",
+        "note": "376 frames",
+        "color": "#f5a623"
+      },
+      {
+        "from": 2242,
+        "label": "Ramp",
+        "note": "296 frames",
+        "color": "#e0568a"
+      },
+      {
+        "from": 2538,
+        "label": "Blj",
+        "note": "136 frames",
+        "color": "#9b6bf2"
+      },
+      {
+        "from": 2674,
+        "label": "Redirect",
+        "note": "28 frames",
+        "color": "#35b8c9"
+      },
+      {
+        "from": 2702,
+        "label": "Climb",
+        "note": "39 frames",
+        "color": "#4c8bf5"
+      },
+      {
+        "from": 2741,
+        "label": "Redirect2",
+        "note": "2 frames",
+        "color": "#2bb673"
+      },
+      {
+        "from": 2743,
+        "label": "ClimbLedge",
+        "note": "25 frames",
+        "color": "#f5a623"
+      },
+      {
+        "from": 2768,
+        "label": "ClimbSummit",
+        "note": "11 frames",
+        "color": "#e0568a"
+      },
+      {
+        "from": 2779,
+        "label": "KingIntro",
+        "note": "152 frames",
+        "color": "#9b6bf2"
+      },
+      {
+        "from": 2931,
+        "label": "KingHit1",
+        "note": "75 frames",
+        "color": "#35b8c9"
+      },
+      {
+        "from": 3006,
+        "label": "KingHit2",
+        "note": "187 frames",
+        "color": "#4c8bf5"
+      },
+      {
+        "from": 3193,
+        "label": "KingHit3",
+        "note": "185 frames",
+        "color": "#2bb673"
+      },
+      {
+        "from": 3378,
+        "label": "KingStar",
+        "note": "232 frames",
+        "color": "#f5a623"
+      }
+    ],
+    "important": true
+  },
+  {
+    "date": "2026-11-04T00:00:00Z",
+    "title": "King route: tree and hyperjump, star at 3829",
+    "description": "BLJ, tree redirect, a hyperjump above the slippery east slope, then the walked upper path. Star at frame 3829 (2:07.6).",
+    "file": "obrrt2/legs-kingloop-0061-r1-x2-tree-d.m64",
+    "start": 1646,
+    "regions": [
+      {
+        "from": 0,
+        "label": "Boot",
+        "note": "The TAS's boot inputs, to the castle grounds.",
+        "color": "#8b93a7"
+      },
+      {
+        "from": 1646,
+        "label": "LakituHill",
+        "note": "219 frames",
+        "color": "#4c8bf5"
+      },
+      {
+        "from": 1865,
+        "label": "BobPainting",
+        "note": "375 frames",
+        "color": "#2bb673"
+      },
+      {
+        "from": 2240,
+        "label": "Ramp",
+        "note": "296 frames",
+        "color": "#f5a623"
+      },
+      {
+        "from": 2536,
+        "label": "Blj",
+        "note": "135 frames",
+        "color": "#e0568a"
+      },
+      {
+        "from": 2671,
+        "label": "Redirect",
+        "note": "28 frames",
+        "color": "#9b6bf2"
+      },
+      {
+        "from": 2699,
+        "label": "ClimbAboveSlope",
+        "note": "37 frames",
+        "color": "#35b8c9"
+      },
+      {
+        "from": 2736,
+        "label": "Ledge2",
+        "note": "49 frames",
+        "color": "#4c8bf5"
+      },
+      {
+        "from": 2785,
+        "label": "BackPath",
+        "note": "85 frames",
+        "color": "#2bb673"
+      },
+      {
+        "from": 2870,
+        "label": "UpperPath",
+        "note": "56 frames",
+        "color": "#f5a623"
+      },
+      {
+        "from": 2926,
+        "label": "Summit",
+        "note": "68 frames",
+        "color": "#e0568a"
+      },
+      {
+        "from": 2994,
+        "label": "KingIntro",
+        "note": "211 frames",
+        "color": "#9b6bf2"
+      },
+      {
+        "from": 3205,
+        "label": "KingHit1",
+        "note": "74 frames",
+        "color": "#35b8c9"
+      },
+      {
+        "from": 3279,
+        "label": "KingHit2",
+        "note": "168 frames",
+        "color": "#4c8bf5"
+      },
+      {
+        "from": 3447,
+        "label": "KingHit3",
+        "note": "157 frames",
+        "color": "#2bb673"
+      },
+      {
+        "from": 3604,
+        "label": "KingStar",
+        "note": "225 frames",
+        "color": "#f5a623"
+      }
+    ]
+  },
+  {
+    "date": "2026-11-04T00:00:00Z",
+    "title": "King route: walked, star at 4075",
+    "description": "The walked route, refined by the loop. Star at frame 4075 (2:15.8).",
+    "file": "obrrt2/legs-kingloop-0094-r1-x1-hits.m64",
+    "start": 1646,
+    "regions": [
+      {
+        "from": 0,
+        "label": "Boot",
+        "note": "The TAS's boot inputs, to the castle grounds.",
+        "color": "#8b93a7"
+      },
+      {
+        "from": 1646,
+        "label": "LakituHill",
+        "note": "219 frames",
+        "color": "#4c8bf5"
+      },
+      {
+        "from": 1865,
+        "label": "BobPainting",
+        "note": "380 frames",
+        "color": "#2bb673"
+      },
+      {
+        "from": 2245,
+        "label": "Hill1",
+        "note": "420 frames",
+        "color": "#f5a623"
+      },
+      {
+        "from": 2665,
+        "label": "ChompSide",
+        "note": "48 frames",
+        "color": "#e0568a"
+      },
+      {
+        "from": 2713,
+        "label": "EastPath",
+        "note": "277 frames",
+        "color": "#9b6bf2"
+      },
+      {
+        "from": 2990,
+        "label": "BackPath",
+        "note": "84 frames",
+        "color": "#35b8c9"
+      },
+      {
+        "from": 3074,
+        "label": "UpperPath",
+        "note": "61 frames",
+        "color": "#4c8bf5"
+      },
+      {
+        "from": 3135,
+        "label": "Summit",
+        "note": "70 frames",
+        "color": "#2bb673"
+      },
+      {
+        "from": 3205,
+        "label": "KingIntro",
+        "note": "221 frames",
+        "color": "#f5a623"
+      },
+      {
+        "from": 3426,
+        "label": "KingHit1",
+        "note": "74 frames",
+        "color": "#e0568a"
+      },
+      {
+        "from": 3500,
+        "label": "KingHit2",
+        "note": "177 frames",
+        "color": "#9b6bf2"
+      },
+      {
+        "from": 3677,
+        "label": "KingHit3",
+        "note": "165 frames",
+        "color": "#35b8c9"
+      },
+      {
+        "from": 3842,
+        "label": "KingStar",
+        "note": "233 frames",
+        "color": "#4c8bf5"
+      }
+    ]
+  },
+  {
+    "date": "2026-11-04T00:00:00Z",
+    "title": "King route: speed chain, unfinished",
+    "description": "Unfinished: the spawn slope's speed chain to the BLJ setup point (161 frames from control; TAS 147), then both trees, done at frame 2719, 24 frames ahead of the record. Failed the leg to the high ledge.",
+    "file": "obrrt2/legs-speed-blj-fresh-s1.m64",
+    "start": 1646,
+    "regions": [
+      {
+        "from": 0,
+        "label": "Boot",
+        "note": "The TAS's boot inputs, to the castle grounds.",
+        "color": "#8b93a7"
+      },
+      {
+        "from": 1646,
+        "label": "LakituHill",
+        "note": "219 frames",
+        "color": "#4c8bf5"
+      },
+      {
+        "from": 1865,
+        "label": "CastleDoor",
+        "note": "86 frames",
+        "color": "#2bb673"
+      },
+      {
+        "from": 1951,
+        "label": "BobPainting",
+        "note": "290 frames",
+        "color": "#f5a623"
+      },
+      {
+        "from": 2241,
+        "label": "SpeedChain",
+        "note": "280 frames",
+        "color": "#e0568a"
+      },
+      {
+        "from": 2521,
+        "label": "Blj",
+        "note": "153 frames",
+        "color": "#9b6bf2"
+      },
+      {
+        "from": 2674,
+        "label": "Redirect",
+        "note": "8 frames",
+        "color": "#35b8c9"
+      },
+      {
+        "from": 2682,
+        "label": "Climb",
+        "note": "35 frames",
+        "color": "#4c8bf5"
+      },
+      {
+        "from": 2717,
+        "label": "Redirect2",
+        "note": "2 frames",
+        "color": "#2bb673"
+      }
+    ]
+  },
+  {
+    "date": "2026-11-04T00:00:00Z",
+    "title": "King route: VCutM from the 7th coin, switch first",
+    "description": "The 2026 TAS's first star with the vanish cap switch pressed before the 8th red coin: star at 2642, against the TAS's 2569. Landing after the switch opens its dialog, about 84 frames.",
+    "file": "obrrt2/legs-tas-switch-first-2362-s2.m64",
+    "start": 1646,
+    "regions": [
+      {
+        "from": 0,
+        "label": "Boot",
+        "note": "The TAS's boot inputs, to the castle grounds.",
+        "color": "#8b93a7"
+      },
+      {
+        "from": 1646,
+        "label": "SwitchFirst",
+        "note": "280 frames",
+        "color": "#4c8bf5"
+      }
+    ]
+  },
+  {
+    "date": "2026-11-04T00:00:00Z",
+    "title": "Objective RRT v2: q15-pw1-s2, 4 stars",
+    "description": "Parent window on every attempt: second star at 2:49.4, third at 3:46.6. Node 39846, frame 9554.",
+    "file": "obrrt2/q15-pw1-s2-star4.m64",
+    "start": 1646
+  },
+  {
+    "date": "2026-11-04T00:00:00Z",
+    "title": "Objective RRT v2: q15-pw1-s3, 5 stars",
+    "description": "Parent window on every attempt: five stars, the fifth at 7:11.4. Node 45871, frame 12943.",
+    "file": "obrrt2/q15-pw1-s3-star5.m64",
+    "start": 1646
   }
 ]

@@ -17,8 +17,12 @@ export default defineConfig({
   resolve: localBinds ? { alias: { 'sm64-binds-frontend': localBinds } } : {},
   server: {
     ...(localBinds ? { fs: { allow: ['..', localBinds] } } : {}),
-    // The Objective-RRT tree server (objective-rrt/tools/viz.py) for the tree view.
-    proxy: { '/obrrt': { target: 'http://localhost:8090', rewrite: (p) => p.replace(/^\/obrrt/, '') } },
+    // The Objective-RRT tree server (objective-rrt/tools/viz.py) for the tree view,
+    // and the objective-scattershot data server (objective-scattershot/tools/serve.py).
+    proxy: {
+      '/obrrt': { target: 'http://localhost:8090', rewrite: (p) => p.replace(/^\/obrrt/, '') },
+      '/oss': { target: 'http://localhost:8091', rewrite: (p) => p.replace(/^\/oss/, '') },
+    },
   },
   base: '/sm64-viewer',
 })
