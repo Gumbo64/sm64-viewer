@@ -1,11 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import RomGate from './components/RomGate';
 import ReplayPicker from './components/ReplayPicker';
-import Viewer from './components/Viewer';
+import { Viewer, parseReplay } from 'sm64-binds-frontend/replay';
 import TreeView from './components/TreeView';
 import OssView from './oss/OssView';
 import RoutesView from './routes/RoutesView';
-import { parseReplay } from './lib/m64';
 import { savePending, takePending } from './lib/pending';
 import { regionsFor } from './lib/regions';
 

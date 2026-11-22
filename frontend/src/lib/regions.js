@@ -12,24 +12,11 @@
 // A replay index.json doesn't list gets them from a `regions.json` next to it
 // (the same list, as objective-rrt-v2's `legs` writes beside route.m64).
 
+import { normalizeRegions } from 'sm64-binds-frontend/replay';
+
 const BASE = import.meta.env.BASE_URL.replace(/\/?$/, '/');
-const COLORS = ['#60a5fa', '#f59e0b', '#a78bfa', '#34d399', '#f472b6', '#22d3ee'];
 
 const pathOf = (url) => new URL(url, window.location.href).pathname;
-
-/** Sorted, with `to` filled in and a colour each; drops entries without a `from`. */
-export function normalizeRegions(list, total) {
-  const sorted = (Array.isArray(list) ? list : [])
-    .filter((r) => Number.isFinite(r?.from))
-    .sort((a, b) => a.from - b.from);
-  return sorted.map((r, i) => ({
-    from: Math.max(0, r.from),
-    to: Math.min(total, Number.isFinite(r.to) ? r.to : (sorted[i + 1]?.from ?? total)),
-    label: r.label ?? `Region ${i + 1}`,
-    note: r.note,
-    color: r.color ?? COLORS[i % COLORS.length],
-  }));
-}
 
 /** The regions index.json gives the replay at `source` (a URL), else those of a regions.json beside it, or []. */
 export async function regionsFor(source, total) {
@@ -68,6 +55,3 @@ async function indexRegions(source, total) {
   }
   return null;
 }
-
-/** The region `frame` is in, or null. */
-export const regionAt = (regions, frame) => regions.find((r) => frame >= r.from && frame < r.to) ?? null;

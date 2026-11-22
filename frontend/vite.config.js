@@ -14,7 +14,16 @@ export default defineConfig({
     react(),
     wasm(),
   ],
-  resolve: localBinds ? { alias: { 'sm64-binds-frontend': localBinds } } : {},
+  // The package's subpaths (the replay player) need their own aliases; React must be
+  // one copy even when the checkout has its own node_modules.
+  resolve: {
+    dedupe: ['react', 'react-dom'],
+    alias: localBinds ? [
+      { find: 'sm64-binds-frontend/replay.css', replacement: path.join(localBinds, 'src/replay/replay.css') },
+      { find: 'sm64-binds-frontend/replay', replacement: path.join(localBinds, 'src/replay/index.js') },
+      { find: /^sm64-binds-frontend$/, replacement: localBinds },
+    ] : [],
+  },
   server: {
     ...(localBinds ? { fs: { allow: ['..', localBinds] } } : {}),
     // The Objective-RRT tree server (objective-rrt/tools/viz.py) for the tree view,

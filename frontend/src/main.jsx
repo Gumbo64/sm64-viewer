@@ -1,5 +1,6 @@
 import { createRoot } from 'react-dom/client';
 import './styles.css';
+import 'sm64-binds-frontend/replay.css'; // after styles.css, as when the viewer imported it itself
 import App from './App.jsx';
 
 // No StrictMode: it would mount the viewer twice and start two emulators.
