@@ -5,6 +5,7 @@
 import { Sm64VisualEngine } from 'sm64-binds-frontend';
 import { FPS } from './m64';
 import { ResolutionControl, loadResolution } from './resolution';
+import { Trail } from './trail';
 
 export const SPEEDS = [0.25, 0.5, 1, 2, 4, 8, 16, Infinity];
 
@@ -32,6 +33,7 @@ export class Player {
     this.lastTime = null;
     this.debt = 0;
     this.dirty = true;
+    this.trail = new Trail(); // save states, for seeking backwards (see saveState / loadState)
     this.exporting = false; // lib/exporter.js is stepping the game; tick() stays out of it
   }
 
@@ -136,18 +138,65 @@ export class Player {
     this.rendered = false;
   }
 
-  /** Fast-forwards to `target` (only forwards; returns false otherwise). */
+  /**
+   * Goes to `target`: forwards by fast-forwarding; backwards by loading the
+   * nearest earlier state of the trail and fast-forwarding from there. Returns
+   * false if there is none (the emulator has to start over: see pending.js).
+   */
   seek(target) {
     target = Math.max(0, Math.min(this.pads.length, Math.round(target)));
-    if (target < this.frame) return false;
+    if (target < this.frame && !this.rewindTo(target)) return false;
     this.seekTarget = target === this.frame ? null : target;
     this.dirty = true;
     return true;
   }
 
-  advance() {
-    const pad = this.pads[this.frame];
+  // --- the trail of save states ---
+
+  /** Takes a state of the game as it is (before frame `this.frame`), or null if it can't. Subclasses may use other states. */
+  saveState() {
+    if (!this.engine?.portable_supported) return null;
+    try {
+      return this.engine.export_portable_state();
+    } catch {
+      return null; // no portable form here (the intro's Mario head runs): try again later
+    }
+  }
+
+  /** Makes the game the one `state` (from saveState) was taken of, at movie frame `frame`. */
+  loadState(state, frame) {
+    this.engine.load_portable_state(state);
+    this.frame = frame;
+    this.state = this.engine.get_game_state();
+    this.events = this.events.filter((e) => e.frame <= frame);
+    this.rendered = false;
+    this.dirty = true;
+  }
+
+  /** Called before every frame: keeps a state when one is due. */
+  checkpoint() {
+    if (!this.trail.due(this.frame)) return;
+    const s = this.saveState();
+    if (s) this.trail.add(this.frame, s);
+  }
+
+  /** Loads the latest state before `target` (so at least one frame is drawn after it); false if there is none. */
+  rewindTo(target) {
+    const c = this.trail.nearest(Math.max(0, target - 1));
+    if (!c) return false;
+    this.loadState(c.state, c.frame);
+    return true;
+  }
+
+  /** Plays one frame in the engine (a subclass may route the pad elsewhere, e.g. through a perturbation). */
+  stepGame(pad) {
     this.engine.step_game(pad);
+  }
+
+  advance() {
+    this.checkpoint();
+    const pad = this.pads[this.frame];
+    this.stepGame(pad);
     this.rendered = true;
     this.frame += 1;
     const prev = this.state;

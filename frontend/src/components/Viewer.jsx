@@ -7,6 +7,7 @@ import Hud from './Hud';
 import InputDisplay from './InputDisplay';
 import Timeline from './Timeline';
 import { RESOLUTIONS, loadResolution, saveResolution } from '../lib/resolution';
+import '../replay.css';
 
 // Loaded when first opened (it brings the MP4 muxer).
 const ExportDialog = lazy(() => import('./ExportDialog'));
@@ -16,8 +17,18 @@ const speedLabel = (s) => (s === Infinity ? 'max' : `${s}×`);
 /**
  * Plays one replay. `initial` = { frame, speed, playing } to restore after a
  * rewind; `onRewind(frame, speed, playing)` is called to go backwards.
+ *
+ * Also used by other apps (the SM64Coin block page) through replay-ui.js:
+ * `makePlayer(replay, onChange)` makes the Player (a subclass: another way to
+ * play the frames), `topbarExtra(view)` / `panelExtra(view)` add to the top
+ * bar and replace the regions list in the side panel, `regionLink(region)`
+ * adds to the region chip, `milestones` (frames, sorted) enable the previous /
+ * next star buttons (n / b, PageDown / PageUp).
  */
-export default function Viewer({ replay, initial, onRewind, onClose, backLabel = '← Replays' }) {
+export default function Viewer({
+  replay, initial, onRewind, onClose, backLabel = '← Replays',
+  makePlayer, topbarExtra, panelExtra, regionLink, milestones,
+}) {
   const container = useRef(null);
   const stage = useRef(null);
   const player = useRef(null);
@@ -33,7 +44,7 @@ export default function Viewer({ replay, initial, onRewind, onClose, backLabel =
   const exportJob = useRef(initial?.exportJob ?? null);
 
   useEffect(() => {
-    const p = new Player(replay.pads, setView);
+    const p = makePlayer ? makePlayer(replay, setView) : new Player(replay.pads, setView);
     player.current = p;
     p.setSpeed(initial?.speed ?? 1);
     p.attach(container.current)
@@ -69,6 +80,17 @@ export default function Viewer({ replay, initial, onRewind, onClose, backLabel =
       if (!p.seek(target)) onRewind(target, p.speed, p.playing);
     },
     [view, onRewind],
+  );
+
+  // Previous / next star (any milestone: a block's end in the coin's cycle).
+  const jumpStar = useCallback(
+    (dir) => {
+      if (!view || !milestones?.length) return;
+      const f = view.frame;
+      if (dir > 0) seek(milestones.find((m) => m > f) ?? view.total);
+      else seek([...milestones].reverse().find((m) => m < f - 30) ?? 0);
+    },
+    [view, milestones, seek],
   );
 
   const changeSpeed = useCallback((dir) => {
@@ -149,6 +171,16 @@ export default function Viewer({ replay, initial, onRewind, onClose, backLabel =
         case 'p':
           setShowPanel((v) => !v);
           break;
+        case 'n':
+        case 'PageDown':
+          e.preventDefault();
+          jumpStar(1);
+          break;
+        case 'b':
+        case 'PageUp':
+          e.preventDefault();
+          jumpStar(-1);
+          break;
         case 'Home':
           seek(0);
           break;
@@ -160,13 +192,13 @@ export default function Viewer({ replay, initial, onRewind, onClose, backLabel =
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [view, seek, changeSpeed, fullscreen, exportOpen, exporting]);
+  }, [view, seek, jumpStar, changeSpeed, fullscreen, exportOpen, exporting]);
 
   const p = player.current;
   const region = view ? regionAt(replay.regions, view.frame) : null;
 
   return (
-    <div className="viewer">
+    <div className="viewer sm64-replay">
       <header className="topbar">
         <button className="ghost" onClick={onClose} title={backLabel === '← Tree' ? 'Back to the search tree' : 'Load another replay'}>
           {backLabel}
@@ -178,6 +210,7 @@ export default function Viewer({ replay, initial, onRewind, onClose, backLabel =
           {replay.pads.length} frames · {formatTime(replay.pads.length)}
           {replay.header ? ' · Mupen64 header skipped' : ''}
         </span>
+        {topbarExtra && topbarExtra(view)}
         <span className="spacer" />
         <label className="res-select small muted" htmlFor="resolution">
           Resolution
@@ -243,6 +276,7 @@ export default function Viewer({ replay, initial, onRewind, onClose, backLabel =
                 seekTarget={view.seekTarget}
                 events={view.events}
                 regions={replay.regions}
+                milestones={milestones}
                 onSeek={seek}
               />
             </div>
@@ -255,6 +289,7 @@ export default function Viewer({ replay, initial, onRewind, onClose, backLabel =
                 {region.from}–{region.to}
               </span>
               {region.note && <span className="muted">{region.note}</span>}
+              {regionLink && regionLink(region)}
             </div>
           )}
           {view?.seeking && (
@@ -274,7 +309,7 @@ export default function Viewer({ replay, initial, onRewind, onClose, backLabel =
           <aside className="panel">
             <h3>Input</h3>
             <InputDisplay pad={view?.pad} />
-            {replay.regions.length > 0 && (
+            {panelExtra ? panelExtra(view) : replay.regions.length > 0 && (
               <>
                 <h3>Regions</h3>
                 <ul className="events regions">
@@ -316,6 +351,12 @@ export default function Viewer({ replay, initial, onRewind, onClose, backLabel =
               <dd>±10 s</dd>
               <dt>+ / −</dt>
               <dd>speed</dd>
+              {milestones?.length > 0 && (
+                <>
+                  <dt>n / b</dt>
+                  <dd>next / previous star</dd>
+                </>
+              )}
               <dt>f · h · p</dt>
               <dd>fullscreen · HUD · panel</dd>
             </dl>
@@ -330,7 +371,15 @@ export default function Viewer({ replay, initial, onRewind, onClose, backLabel =
             player={player.current}
             frame={view.frame}
             job={exportJob.current}
-            onRewind={(frame, job) => onRewind(frame, 1, false, job)}
+            onRewind={(frame, job) => {
+              // A player that can go back in place (save states) does; any
+              // other reloads. The dialog reopens with `job` once it arrives.
+              if (p.seek(frame)) {
+                p.emit();
+                exportJob.current = job;
+                setExportOpen(false);
+              } else onRewind(frame, 1, false, job);
+            }}
             onBusy={setExporting}
             onClose={() => {
               exportJob.current = null;
@@ -348,13 +397,27 @@ export default function Viewer({ replay, initial, onRewind, onClose, backLabel =
             seekTarget={view.seekTarget}
             events={view.events}
             regions={replay.regions}
+            milestones={milestones}
             onSeek={seek}
           />
         )}
+        {/* The readout has its own line, with fixed-width digits: the controls below never shift. */}
+        <div className="row readout">
+          <span className="mono clock">
+            {view ? `${view.frame} / ${view.total}` : '—'} · {view ? formatTime(view.frame) : ''}
+          </span>
+          <span className="spacer" />
+          <span className="muted small">{view?.speed === 1 && view?.playing ? 'sound on' : 'sound only at 1×'}</span>
+        </div>
         <div className="row">
           <button onClick={() => seek(0)} disabled={!view} title="Restart (Home)">
             ⏮
           </button>
+          {milestones?.length > 0 && (
+            <button onClick={() => jumpStar(-1)} disabled={!view} title="Previous star (b / PageUp)">
+              ⏮★
+            </button>
+          )}
           <button onClick={() => seek((view?.frame ?? 1) - 1)} disabled={!view || view.frame === 0} title="Previous frame (←), reloads">
             ◀︎|
           </button>
@@ -364,6 +427,11 @@ export default function Viewer({ replay, initial, onRewind, onClose, backLabel =
           <button onClick={() => p?.step()} disabled={!view || view.seeking} title="Next frame (→)">
             |▶︎
           </button>
+          {milestones?.length > 0 && (
+            <button onClick={() => jumpStar(1)} disabled={!view} title="Next star (n / PageDown)">
+              ★⏭
+            </button>
+          )}
           <label className="row tight">
             Speed
             <select value={String(view?.speed ?? 1)} onChange={(e) => p?.setSpeed(Number(e.target.value))} disabled={!view}>
@@ -374,9 +442,6 @@ export default function Viewer({ replay, initial, onRewind, onClose, backLabel =
               ))}
             </select>
           </label>
-          <span className="mono">
-            {view ? `${view.frame} / ${view.total}` : '—'} · {view ? formatTime(view.frame) : ''}
-          </span>
           <span className="spacer" />
           <form
             className="row tight"
@@ -399,7 +464,6 @@ export default function Viewer({ replay, initial, onRewind, onClose, backLabel =
               Go
             </button>
           </form>
-          <span className="muted small">{view?.speed === 1 && view?.playing ? 'sound on' : 'sound only at 1×'}</span>
         </div>
       </footer>
     </div>

@@ -14,7 +14,7 @@ const LANES = [
  * Annotated `regions` (see lib/regions.js) get a labelled track above it;
  * clicking one seeks to its start.
  */
-export default function Timeline({ pads, frame, seekTarget, events, regions = [], onSeek }) {
+export default function Timeline({ pads, frame, seekTarget, events, regions = [], milestones, onSeek }) {
   const strip = useRef(null);
   const wrap = useRef(null);
   const [width, setWidth] = useState(800);
@@ -107,7 +107,10 @@ export default function Timeline({ pads, frame, seekTarget, events, regions = []
         <canvas ref={strip} className="strip" style={{ width: '100%', height: 36 }} />
         <div className="played" style={{ width: pct(frame) }} />
         {seekTarget !== null && <div className="target" style={{ left: pct(seekTarget) }} />}
-        {events.map((ev, i) => (
+        {milestones?.map((f) => (
+          <div key={`m${f}`} className="marker star" style={{ left: pct(f) }} title={`Star: frame ${f}`} />
+        ))}
+        {(milestones ? events.filter((ev) => ev.kind !== 'star') : events).map((ev, i) => (
           <div
             key={i}
             className={`marker ${ev.kind}`}
