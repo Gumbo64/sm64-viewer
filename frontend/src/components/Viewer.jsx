@@ -73,11 +73,11 @@ export default function Viewer({
   }, [view, exportOpen]);
 
   const seek = useCallback(
-    (target) => {
+    (target, dragging = false) => {
       const p = player.current;
       if (!p || !view) return;
       target = Math.max(0, Math.min(view.total, Math.round(target)));
-      if (!p.seek(target)) onRewind(target, p.speed, p.playing);
+      if (!p.seek(target) && !dragging) onRewind(target, p.speed, p.playing);
     },
     [view, onRewind],
   );

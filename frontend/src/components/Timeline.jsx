@@ -17,6 +17,7 @@ const LANES = [
 export default function Timeline({ pads, frame, seekTarget, events, regions = [], milestones, onSeek }) {
   const strip = useRef(null);
   const wrap = useRef(null);
+  const drag = useRef(false);
   const [width, setWidth] = useState(800);
   const [hover, setHover] = useState(null);
   const total = pads.length;
@@ -76,6 +77,7 @@ export default function Timeline({ pads, frame, seekTarget, events, regions = []
     const r = wrap.current.getBoundingClientRect();
     return Math.round(Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)) * total);
   };
+  const head = seekTarget ?? frame; // while seeking the playhead is already at the target
   const pct = (f) => `${(100 * f) / Math.max(1, total)}%`;
   const current = regionAt(regions, frame);
   const hovered = hover !== null ? regionAt(regions, hover) : null;
@@ -102,10 +104,27 @@ export default function Timeline({ pads, frame, seekTarget, events, regions = []
         ref={wrap}
         onMouseMove={(e) => setHover(frameAt(e))}
         onMouseLeave={() => setHover(null)}
-        onClick={(e) => onSeek(frameAt(e))}
+        onPointerDown={(e) => {
+          // Click or drag: the playhead follows the pointer (a drag's seeks are
+          // marked, so a player that must reload to go back does so only on release).
+          e.currentTarget.setPointerCapture?.(e.pointerId);
+          drag.current = true;
+          onSeek(frameAt(e), true);
+        }}
+        onPointerMove={(e) => {
+          if (drag.current) onSeek(frameAt(e), true);
+        }}
+        onPointerUp={(e) => {
+          if (!drag.current) return;
+          drag.current = false;
+          onSeek(frameAt(e), false);
+        }}
+        onPointerCancel={() => {
+          drag.current = false;
+        }}
       >
         <canvas ref={strip} className="strip" style={{ width: '100%', height: 36 }} />
-        <div className="played" style={{ width: pct(frame) }} />
+        <div className="played" style={{ width: pct(head) }} />
         {seekTarget !== null && <div className="target" style={{ left: pct(seekTarget) }} />}
         {milestones?.map((f) => (
           <div key={`m${f}`} className="marker star" style={{ left: pct(f) }} title={`Star: frame ${f}`} />
@@ -118,7 +137,7 @@ export default function Timeline({ pads, frame, seekTarget, events, regions = []
             title={`${ev.kind === 'star' ? ev.label : 'Area change'} — frame ${ev.frame}`}
           />
         ))}
-        <div className="playhead" style={{ left: pct(frame) }} />
+        <div className="playhead" style={{ left: pct(head) }} />
         {hover !== null && (
           <div className="hover" style={{ left: pct(hover) }}>
             {hover} · {formatTime(hover)}

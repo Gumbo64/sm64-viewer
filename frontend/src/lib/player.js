@@ -12,6 +12,38 @@ export const SPEEDS = [0.25, 0.5, 1, 2, 4, 8, 16, Infinity];
 // Wall-clock budget per animation frame while fast-forwarding / playing at
 // max speed, so the page stays responsive.
 const BUDGET_MS = 14;
+// A seek works in slices this long between yields to the page (nothing is
+// drawn or heard while it runs, so a long slice is fine).
+const SEEK_SLICE_MS = 40;
+// While playing, the background trail pass gets one hop this often.
+const HOP_GAP_MS = 700;
+
+// A message channel yields to the page without the 4 ms clamp of setTimeout
+// and without waiting for an animation frame (which a busy page delays).
+const channel = typeof MessageChannel !== 'undefined' ? new MessageChannel() : null;
+const waiting = [];
+if (channel) channel.port1.onmessage = () => waiting.shift()?.();
+const yieldTask = () => new Promise((r) => (channel ? (waiting.push(r), channel.port2.postMessage(0)) : setTimeout(r, 0)));
+
+// Skips the GL draw calls (state and textures still update, only pixels are
+// not drawn): what makes seeking and the trail pass fast. Returns the undo.
+function muteDrawing(canvas) {
+  let gl = null;
+  try {
+    gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
+  } catch {
+    // no context
+  }
+  if (!gl) return () => {};
+  const saved = {};
+  for (const k of ['drawElements', 'drawArrays', 'clear']) {
+    saved[k] = gl[k];
+    gl[k] = () => {};
+  }
+  return () => {
+    for (const k in saved) gl[k] = saved[k];
+  };
+}
 
 export class Player {
   constructor(pads, onChange) {
@@ -33,7 +65,16 @@ export class Player {
     this.lastTime = null;
     this.debt = 0;
     this.dirty = true;
-    this.trail = new Trail(); // save states, for seeking backwards (see saveState / loadState)
+    // Save states, for seeking in both directions (see saveState / loadState):
+    // one every `every` frames, at most about 300 whatever the length.
+    this.trail = new Trail(Math.max(240, Math.ceil(pads.length / 300)), 400);
+    this.trailSkipped = new Set(); // frames the background pass could not take a state at
+    this.quiet = false; // stepping without drawing (a seek or a trail hop)
+    this.trackEvents = true; // read the game state on every frame, even while quiet (for the events list)
+    this.seekRunning = false;
+    this.hopping = false;
+    this.lastHop = 0;
+    this.dead = false;
     this.exporting = false; // lib/exporter.js is stepping the game; tick() stays out of it
   }
 
@@ -55,6 +96,8 @@ export class Player {
     this.resolution.start();
     this.setAudio(false);
     this.state = this.engine.get_game_state();
+    const s0 = this.saveState(); // the start, if it can be saved (the trail's first state)
+    if (s0) this.trail.add(0, s0);
     this.raf = requestAnimationFrame(this.tick);
     this.emit();
   }
@@ -64,6 +107,7 @@ export class Player {
   }
 
   dispose() {
+    this.dead = true;
     this.resolution?.stop();
     cancelAnimationFrame(this.raf);
     this.raf = 0;
@@ -145,9 +189,92 @@ export class Player {
    */
   seek(target) {
     target = Math.max(0, Math.min(this.pads.length, Math.round(target)));
-    if (target < this.frame && !this.rewindTo(target)) return false;
+    // Backwards, or forwards past a state ahead of here: start from the nearest state.
+    const ahead = this.trail.nearest(target - 1);
+    if (target < this.frame || (ahead && ahead.frame > this.frame)) {
+      if (!this.rewindTo(target) && target < this.frame) return false;
+    }
     this.seekTarget = target === this.frame ? null : target;
     this.dirty = true;
+    if (this.seekTarget !== null) {
+      this.emit(); // the playhead jumps to the target at once
+      this.runSeek();
+    }
+    return true;
+  }
+
+  /** Fast-forwards to the seek target without drawing, in slices that yield to the page. */
+  async runSeek() {
+    if (this.seekRunning) return; // the running one follows the new target
+    this.seekRunning = true;
+    this.setAudio(false);
+    let unmute = null;
+    try {
+      while (this.seekTarget !== null && !this.dead && !this.exporting) {
+        const t0 = performance.now();
+        while (this.frame < this.seekTarget && performance.now() - t0 < SEEK_SLICE_MS) {
+          // Everything but the last frame is quiet; the last one is drawn.
+          this.quiet = this.frame < this.seekTarget - 1;
+          if (this.quiet && !unmute) unmute = muteDrawing(this.canvas);
+          else if (!this.quiet && unmute) { unmute(); unmute = null; }
+          this.advance();
+        }
+        this.quiet = false;
+        if (this.frame >= this.seekTarget) {
+          this.seekTarget = null;
+          this.lastTime = null;
+          this.debt = 0;
+          this.state = this.engine.get_game_state();
+          break;
+        }
+        this.dirty = true;
+        this.emit();
+        await yieldTask();
+      }
+    } finally {
+      this.quiet = false;
+      if (unmute) unmute();
+      this.seekRunning = false;
+      this.dirty = true;
+      this.emit();
+    }
+  }
+
+  /**
+   * One step of the background pass that fills the trail: the first missing
+   * state, `every` frames on from the one before it, taken without drawing,
+   * after which the game is put back exactly where it was. Cheap enough to
+   * run between animation frames of normal play; a seek or export is never
+   * waited for (it just starts after the hop).
+   */
+  hopTrail() {
+    const { every } = this.trail;
+    let f = every;
+    while (f < this.pads.length && (this.trail.has(f) || this.trailSkipped.has(f))) f += every;
+    if (f >= this.pads.length) return false; // complete
+    const base = this.trail.nearest(f - 1);
+    if (!base || f - base.frame > every * 4) { this.trailSkipped.add(f); return true; }
+    const cur = this.saveState();
+    if (!cur) return true; // can't put the game back here: try later
+    const keep = { frame: this.frame, state: this.state, events: this.events.slice() };
+    const unmute = muteDrawing(this.canvas);
+    this.hopping = true;
+    try {
+      this.loadState(base.state, base.frame);
+      this.quiet = true;
+      while (this.frame < f) this.advance();
+      this.quiet = false;
+      this.checkpoint(); // takes the state at f
+      if (!this.trail.has(f)) this.trailSkipped.add(f);
+    } finally {
+      this.quiet = false;
+      this.hopping = false;
+      unmute();
+      this.loadState(cur, keep.frame);
+      this.state = keep.state;
+      this.events = keep.events;
+      this.rendered = false;
+    }
     return true;
   }
 
@@ -199,6 +326,7 @@ export class Player {
     this.stepGame(pad);
     this.rendered = true;
     this.frame += 1;
+    if (this.quiet && !this.trackEvents) { this.dirty = true; return; }
     const prev = this.state;
     const s = this.engine.get_game_state();
     this.state = s;
@@ -222,14 +350,7 @@ export class Player {
     }
     const start = performance.now();
     if (this.seeking) {
-      this.setAudio(false);
-      while (this.frame < this.seekTarget && performance.now() - start < BUDGET_MS) {
-        this.advance();
-      }
-      if (this.frame >= this.seekTarget) {
-        this.seekTarget = null;
-        this.lastTime = null;
-      }
+      this.setAudio(false); // runSeek() does the work
     } else if (this.playing) {
       this.setAudio(this.speed === 1);
       if (this.speed === Infinity) {
@@ -254,6 +375,11 @@ export class Player {
       this.rendered = false;
       this.frozen.hidden = true;
       if (!this.seeking && this.speed !== Infinity) this.capture();
+    }
+    // Background: fill the trail (paused: at once; playing: now and then).
+    if (!this.seeking && !this.exporting && !this.dead && time - this.lastHop > (this.playing ? HOP_GAP_MS : 0)) {
+      this.lastHop = time;
+      this.hopTrail();
     }
     if (this.dirty) {
       this.dirty = false;
