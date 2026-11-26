@@ -2,7 +2,7 @@
   {
     "date": "2026-11-24",
     "title": "120-star run, complete: power-on to the credits (self-routed, no TAS inputs)",
-    "description": "The finished run of the self-routed 120-star campaign t1, from power-on through Bowser 3, the Grand Star and the credits, 726580 frames (403:39.3). Every frame is the search's own play (no TAS inputs); replayed from power-on to check it. The campaign entry below shows how it was searched.",
+    "description": "The finished run of the self-routed 120-star campaign t1, from power-on through Bowser 3, the Grand Star and the credits, 726580 frames (403:39.3). Every frame is the search's own play (no TAS inputs); replayed from power-on to check it. The campaign entry below shows how it was searched. Plays identically in Mupen64Plus 2.6.0 (every frame matched, all 120 stars on the same frames).",
     "file": "obrrt2/t1-full-run.m64",
     "start": 1646,
     "important": true,
@@ -2250,6 +2250,16 @@
         "label": "Ending and credits",
         "note": "Peach's scene and the credits, played out by idle frames (tools/seg120/credits.py).",
         "color": "#8b93a7"
+      }
+    ],
+    "links": [
+      {
+        "label": "Download for Mupen64 (.m64, 2.9 MB)",
+        "url": "https://gumbo64.github.io/sm64-viewer/replays/obrrt2/t1-full-run.mupen64plus.m64"
+      },
+      {
+        "label": "Raw inputs (4 bytes/frame)",
+        "url": "https://gumbo64.github.io/sm64-viewer/replays/obrrt2/t1-full-run.m64"
       }
     ]
   },
