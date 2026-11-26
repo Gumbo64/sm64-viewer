@@ -6,8 +6,10 @@ import { romGeometry } from '../tree/romGeometry';
 // the dev server's /obrrt proxy (vite.config.js); VITE_OBRRT_API overrides it.
 const OBRRT_API = import.meta.env.VITE_OBRRT_API ?? '/obrrt';
 // Static exports (objective-rrt/tools/export_tree.py), used when the server
-// isn't there, e.g. on GitHub Pages.
-const STATIC_BASE = `${import.meta.env.BASE_URL.replace(/\/?$/, '/')}trees/`;
+// isn't there, e.g. on GitHub Pages. They are too big for the repo: they live on
+// their own Cloudflare Pages project (sm64coin's "Viewer trees" workflow deploys them from the tag trees-2026-11-26). For local
+// files set VITE_TREES_URL=/trees/ and put the exports in frontend/public/trees/.
+const STATIC_BASE = (import.meta.env.VITE_TREES_URL ?? 'https://sm64-trees.pages.dev/').replace(/\/?$/, '/');
 
 /**
  * The live search-tree view. `state` ({ run, zone, node }) restores where the

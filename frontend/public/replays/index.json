@@ -4087,7 +4087,7 @@
           ]
         }
       ],
-      "note": "Trees load from the live tree server when it runs, else from the static exports in public/trees (tools/export_tree.py)."
+      "note": "Trees load from the live tree server when it runs, else from the static exports on https://sm64-trees.pages.dev (tools/export_tree.py)."
     }
   },
   {

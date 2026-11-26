@@ -110,3 +110,9 @@ frame order, into one MP4 with the overlays drawn in:
 
 Code: `src/lib/player.js` drives the emulator (timing, seeking, events),
 `src/lib/m64.js` parses replays, `src/components/` is the UI.
+
+## Search-tree snapshots
+
+The tree view's static exports (`tools/export_tree.py` output) are not in the repo: they are served from
+https://sm64-trees.pages.dev, deployed by the `Trees` workflow from the tag `trees-2026-11-26`. For local files
+copy them to `public/trees/` (git-ignored) and run with `VITE_TREES_URL=/sm64-viewer/trees/`.
